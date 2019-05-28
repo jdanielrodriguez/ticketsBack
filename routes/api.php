@@ -21,6 +21,7 @@ Route::post('users/password/reset', 'UsersController@recoveryPassword');
 Route::post('users/{id}/changepassword', "UsersController@changePassword");
 
 Route::post('login', 'AuthenticateController@login');
+Route::post('upload', 'AuthenticateController@uploadAvatar');
 
 Route::get('/user', function (Request $request) {
     return $request->user();

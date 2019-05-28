@@ -54,40 +54,6 @@ class EventosFuncionesController extends Controller
         }
     }
     
-    public function getThisByUser($id)
-    {
-        $objectSee = EventosFunciones::where('app','=',$id)->with('users')->get();
-        if ($objectSee) {
-    
-            return Response::json($objectSee, 200);
-    
-        }
-        else {
-            $returnData = array (
-                'status' => 404,
-                'message' => 'No record found'
-            );
-            return Response::json($returnData, 404);
-        }
-    }
-    
-    public function getThisByClient($id)
-    {
-        $objectSee = EventosFunciones::where('app','=',$id)->with('users')->get();
-        if ($objectSee) {
-    
-            return Response::json($objectSee, 200);
-    
-        }
-        else {
-            $returnData = array (
-                'status' => 404,
-                'message' => 'No record found'
-            );
-            return Response::json($returnData, 404);
-        }
-    }
-    
     /**
     * Show the form for creating a new resource.
     *
@@ -121,7 +87,7 @@ class EventosFuncionesController extends Controller
         else {
             try {
                 $newObject = new EventosFunciones();
-                $newObject->column            = $request->get('get');
+                $newObject->column            = $request->get('column');
                 $newObject->save();
                 return Response::json($newObject, 200);
     

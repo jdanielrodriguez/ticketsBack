@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\EventosVendedorVenta;
+use App\EventosVenta;
 use Response;
 use Validator;
 class EventosVendedorVentaController extends Controller
@@ -16,7 +16,7 @@ class EventosVendedorVentaController extends Controller
     */
     public function index()
     {
-        return Response::json(EventosVendedorVenta::all(), 200);
+        return Response::json(EventosVenta::all(), 200);
     }
     
     public function getThisByFilter(Request $request, $id,$state)
@@ -24,58 +24,24 @@ class EventosVendedorVentaController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'state':{
-                    $objectSee = EventosVendedorVenta::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosVenta::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
                     break;
                 }
                 case 'type':{
-                    $objectSee = EventosVendedorVenta::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosVenta::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
                     break;
                 }
                 default:{
-                    $objectSee = EventosVendedorVenta::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosVenta::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = EventosVendedorVenta::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = EventosVenta::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
         }
     
         if ($objectSee) {
-            return Response::json($objectSee, 200);
-    
-        }
-        else {
-            $returnData = array (
-                'status' => 404,
-                'message' => 'No record found'
-            );
-            return Response::json($returnData, 404);
-        }
-    }
-    
-    public function getThisByUser($id)
-    {
-        $objectSee = EventosVendedorVenta::where('app','=',$id)->with('users')->get();
-        if ($objectSee) {
-    
-            return Response::json($objectSee, 200);
-    
-        }
-        else {
-            $returnData = array (
-                'status' => 404,
-                'message' => 'No record found'
-            );
-            return Response::json($returnData, 404);
-        }
-    }
-    
-    public function getThisByClient($id)
-    {
-        $objectSee = EventosVendedorVenta::where('app','=',$id)->with('users')->get();
-        if ($objectSee) {
-    
             return Response::json($objectSee, 200);
     
         }
@@ -120,8 +86,8 @@ class EventosVendedorVentaController extends Controller
         }
         else {
             try {
-                $newObject = new EventosVendedorVenta();
-                $newObject->column            = $request->get('get');
+                $newObject = new EventosVenta();
+                $newObject->column            = $request->get('column');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -135,41 +101,6 @@ class EventosVendedorVentaController extends Controller
         }
     }
     
-    public function uploadAvatar(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'avatar'      => 'required|image|mimes:jpeg,png,jpg'
-        ]);
-    
-        if ($validator->fails()) {
-            $returnData = array(
-                'status' => 400,
-                'message' => 'Invalid Parameters',
-                'validator' => $validator->messages()->toJson()
-            );
-            return Response::json($returnData, 400);
-        }
-        else {
-            try {
-    
-                $path = Storage::disk('s3')->put($request->carpeta, $request->avatar);
-    
-                $objectUpdate->picture = Storage::disk('s3')->url($path);
-                $objectUpdate->save();
-    
-                return Response::json($objectUpdate, 200);
-    
-            }
-            catch (Exception $e) {
-                $returnData = array(
-                    'status' => 500,
-                    'message' => $e->getMessage()
-                );
-            }
-    
-        }
-    }
-    
     /**
     * Display the specified resource.
     *
@@ -178,9 +109,8 @@ class EventosVendedorVentaController extends Controller
     */
     public function show($id)
     {
-        $objectSee = EventosVendedorVenta::find($id);
+        $objectSee = EventosVenta::find($id);
         if ($objectSee) {
-            $objectSee->column;
             return Response::json($objectSee, 200);
     
         }
@@ -213,13 +143,12 @@ class EventosVendedorVentaController extends Controller
     */
     public function update(Request $request, $id)
     {
-        $objectUpdate = EventosVendedorVenta::find($id);
+        $objectUpdate = EventosVenta::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('get', $objectUpdate->column);
+                $objectUpdate->column = $request->get('column', $objectUpdate->column);
     
                 $objectUpdate->save();
-    $objectUpdate->function;
                 return Response::json($objectUpdate, 200);
             } catch (Exception $e) {
                 $returnData = array (
@@ -247,10 +176,10 @@ class EventosVendedorVentaController extends Controller
     */
     public function destroy($id)
     {
-        $objectDelete = EventosVendedorVenta::find($id);
+        $objectDelete = EventosVenta::find($id);
         if ($objectDelete) {
             try {
-                EventosVendedorVenta::destroy($id);
+                EventosVenta::destroy($id);
                 return Response::json($objectDelete, 200);
             } catch (Exception $e) {
                 $returnData = array (

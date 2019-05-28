@@ -57,4 +57,36 @@ class AuthenticateController extends Controller
             }
         }
     }
+
+    public function uploadAvatar(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'avatar'      => 'required|image|mimes:jpeg,png,jpg',
+            'carpeta'      => 'required'
+        ]);
+    
+        if ($validator->fails()) {
+            $returnData = array(
+                'status' => 400,
+                'message' => 'Invalid Parameters',
+                'validator' => $validator->messages()->toJson()
+            );
+            return Response::json($returnData, 400);
+        }
+        else {
+            try {
+    
+                $path = Storage::disk('s3')->put($request->carpeta, $request->avatar);
+                return Response::json(Storage::disk('s3')->url($path), 200);
+    
+            }
+            catch (Exception $e) {
+                $returnData = array(
+                    'status' => 500,
+                    'message' => $e->getMessage()
+                );
+            }
+    
+        }
+    }
 }

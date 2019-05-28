@@ -54,40 +54,6 @@ class EventosDescuentoAreaController extends Controller
         }
     }
     
-    public function getThisByUser($id)
-    {
-        $objectSee = EventosDescuentoArea::where('app','=',$id)->with('users')->get();
-        if ($objectSee) {
-    
-            return Response::json($objectSee, 200);
-    
-        }
-        else {
-            $returnData = array (
-                'status' => 404,
-                'message' => 'No record found'
-            );
-            return Response::json($returnData, 404);
-        }
-    }
-    
-    public function getThisByClient($id)
-    {
-        $objectSee = EventosDescuentoArea::where('app','=',$id)->with('users')->get();
-        if ($objectSee) {
-    
-            return Response::json($objectSee, 200);
-    
-        }
-        else {
-            $returnData = array (
-                'status' => 404,
-                'message' => 'No record found'
-            );
-            return Response::json($returnData, 404);
-        }
-    }
-    
     /**
     * Show the form for creating a new resource.
     *
@@ -121,7 +87,7 @@ class EventosDescuentoAreaController extends Controller
         else {
             try {
                 $newObject = new EventosDescuentoArea();
-                $newObject->column            = $request->get('get');
+                $newObject->column            = $request->get('column');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -135,41 +101,6 @@ class EventosDescuentoAreaController extends Controller
         }
     }
     
-    public function uploadAvatar(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'avatar'      => 'required|image|mimes:jpeg,png,jpg'
-        ]);
-    
-        if ($validator->fails()) {
-            $returnData = array(
-                'status' => 400,
-                'message' => 'Invalid Parameters',
-                'validator' => $validator->messages()->toJson()
-            );
-            return Response::json($returnData, 400);
-        }
-        else {
-            try {
-    
-                $path = Storage::disk('s3')->put($request->carpeta, $request->avatar);
-    
-                $objectUpdate->picture = Storage::disk('s3')->url($path);
-                $objectUpdate->save();
-    
-                return Response::json($objectUpdate, 200);
-    
-            }
-            catch (Exception $e) {
-                $returnData = array(
-                    'status' => 500,
-                    'message' => $e->getMessage()
-                );
-            }
-    
-        }
-    }
-    
     /**
     * Display the specified resource.
     *
@@ -180,7 +111,6 @@ class EventosDescuentoAreaController extends Controller
     {
         $objectSee = EventosDescuentoArea::find($id);
         if ($objectSee) {
-            $objectSee->column;
             return Response::json($objectSee, 200);
     
         }
@@ -216,10 +146,9 @@ class EventosDescuentoAreaController extends Controller
         $objectUpdate = EventosDescuentoArea::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('get', $objectUpdate->column);
+                $objectUpdate->column = $request->get('column', $objectUpdate->column);
     
                 $objectUpdate->save();
-    $objectUpdate->function;
                 return Response::json($objectUpdate, 200);
             } catch (Exception $e) {
                 $returnData = array (
