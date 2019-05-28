@@ -10,10 +10,18 @@ class Users extends Authenticatable
     protected $table = 'users';
 
     protected $hidden = [
-        'password'
+        'password', 'remember_token'
     ];
 
     public function roles(){
         return $this->hasOne('App\Roles','id','rol');
+    }
+
+    public function referidos(){
+        return $this->hasMany('App\Users','referido','id');
+    }
+
+    public function myReferidos(){
+        return $this->hasOne('App\Users','id','referido');
     }
 }
