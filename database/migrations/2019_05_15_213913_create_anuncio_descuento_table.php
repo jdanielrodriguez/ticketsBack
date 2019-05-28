@@ -15,6 +15,17 @@ class CreateAnuncioDescuentoTable extends Migration
     {
         Schema::create('anuncio_descuento', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('titulo')->nullable()->default(null);
+            $table->string('descripcion')->nullable()->default(null);
+            $table->integer('type')->nullable()->default(1);
+            $table->integer('state')->nullable()->default(1);
+
+            $table->integer('anuncio')->nullable()->default(null)->unsigned();
+            $table->foreign('anuncio')->references('id')->on('anuncios')->onDelete('cascade');
+
+            $table->integer('evento_descuento_area')->nullable()->default(null)->unsigned();
+            $table->foreign('evento_descuento_area')->references('id')->on('eventos_descuento_area')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

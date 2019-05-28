@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEventosTable extends Migration
+class CreateEventosVendedorTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateEventosTable extends Migration
      */
     public function up()
     {
-        Schema::create('eventos', function (Blueprint $table) {
+        Schema::create('eventos_vendedor', function (Blueprint $table) {
             $table->increments('id');
             $table->string('titulo')->nullable()->default(null);
+            $table->double('porcentaje')->nullable()->default(null);
+            $table->double('cantidad')->nullable()->default(null);
             $table->string('descripcion')->nullable()->default(null);
             $table->integer('type')->nullable()->default(1);
             $table->integer('state')->nullable()->default(1);
@@ -23,11 +25,11 @@ class CreateEventosTable extends Migration
             $table->integer('usuario')->nullable()->default(null)->unsigned();
             $table->foreign('usuario')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('categoria')->nullable()->default(null)->unsigned();
-            $table->foreign('categoria')->references('id')->on('categoria_eventos')->onDelete('cascade');
+            $table->integer('usuario_admin')->nullable()->default(null)->unsigned();
+            $table->foreign('usuario_admin')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('tipo')->nullable()->default(null)->unsigned();
-            $table->foreign('tipo')->references('id')->on('tipo_eventos')->onDelete('cascade');
+            $table->integer('evento_funcion')->nullable()->default(null)->unsigned();
+            $table->foreign('evento_funcion')->references('id')->on('eventos_funciones')->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -40,6 +42,6 @@ class CreateEventosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('eventos');
+        Schema::dropIfExists('eventos_vendedor');
     }
 }
