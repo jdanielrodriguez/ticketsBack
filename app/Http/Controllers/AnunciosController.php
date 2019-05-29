@@ -24,21 +24,25 @@ class AnunciosController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'state':{
-                    $objectSee = Anuncios::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = Anuncios::whereRaw('state=?',[$state])->with('eventos','usuarios')->get();
                     break;
                 }
-                case 'type':{
-                    $objectSee = Anuncios::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                case 'evento':{
+                    $objectSee = Anuncios::whereRaw('evento=?',[$state])->with('eventos','usuarios')->get();
+                    break;
+                }
+                case 'usuario':{
+                    $objectSee = Anuncios::whereRaw('usuario=?',[$state])->with('eventos','usuarios')->get();
                     break;
                 }
                 default:{
-                    $objectSee = Anuncios::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = Anuncios::whereRaw('state=?',[$state])->with('eventos','usuarios')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = Anuncios::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = Anuncios::with('eventos','usuarios')->get();
         }
     
         if ($objectSee) {
@@ -73,8 +77,8 @@ class AnunciosController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'evento'          => 'required',
+            'usuario'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +91,13 @@ class AnunciosController extends Controller
         else {
             try {
                 $newObject = new Anuncios();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->imagen            = $request->get('imagen');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
+                $newObject->evento            = $request->get('evento');
+                $newObject->usuario            = $request->get('usuario');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -146,7 +156,13 @@ class AnunciosController extends Controller
         $objectUpdate = Anuncios::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('column', $objectUpdate->column);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->imagen = $request->get('imagen', $objectUpdate->imagen);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->evento = $request->get('evento', $objectUpdate->evento);
+                $objectUpdate->usuario = $request->get('usuario', $objectUpdate->usuario);
     
                 $objectUpdate->save();
                 return Response::json($objectUpdate, 200);

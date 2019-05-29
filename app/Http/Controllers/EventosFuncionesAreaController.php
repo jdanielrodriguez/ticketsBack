@@ -24,21 +24,25 @@ class EventosFuncionesAreaController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'state':{
-                    $objectSee = EventosFuncionesArea::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosFuncionesArea::whereRaw('state=?',[$state])->with('tipos','eventos')->get();
                     break;
                 }
-                case 'type':{
-                    $objectSee = EventosFuncionesArea::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                case 'tipo':{
+                    $objectSee = EventosFuncionesArea::whereRaw('tipo=?',[$state])->with('tipos','eventos')->get();
+                    break;
+                }
+                case 'evento_funcion':{
+                    $objectSee = EventosFuncionesArea::whereRaw('evento_funcion=?',[$state])->with('tipos','eventos')->get();
                     break;
                 }
                 default:{
-                    $objectSee = EventosFuncionesArea::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosFuncionesArea::whereRaw('state=?',[$state])->with('tipos','eventos')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = EventosFuncionesArea::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = EventosFuncionesArea::with('tipos','eventos')->get();
         }
     
         if ($objectSee) {
@@ -73,8 +77,8 @@ class EventosFuncionesAreaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'tipo'          => 'required',
+            'evento_funcion'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +91,15 @@ class EventosFuncionesAreaController extends Controller
         else {
             try {
                 $newObject = new EventosFuncionesArea();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->precio            = $request->get('precio');
+                $newObject->total            = $request->get('total');
+                $newObject->vendidos            = $request->get('vendidos');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
+                $newObject->tipo            = $request->get('tipo');
+                $newObject->evento_funcion            = $request->get('evento_funcion');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -146,7 +158,15 @@ class EventosFuncionesAreaController extends Controller
         $objectUpdate = EventosFuncionesArea::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('column', $objectUpdate->column);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->precio = $request->get('precio', $objectUpdate->precio);
+                $objectUpdate->total = $request->get('total', $objectUpdate->total);
+                $objectUpdate->vendidos = $request->get('vendidos', $objectUpdate->vendidos);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->tipo = $request->get('tipo', $objectUpdate->tipo);
+                $objectUpdate->evento_funcion = $request->get('evento_funcion', $objectUpdate->evento_funcion);
     
                 $objectUpdate->save();
                 return Response::json($objectUpdate, 200);

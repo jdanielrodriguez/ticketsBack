@@ -23,22 +23,26 @@ class AnunciosDescuentoController extends Controller
     {
         if($request->get('filter')){
             switch ($request->get('filter')) {
-                case 'state':{
-                    $objectSee = AnunciosDescuento::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                case 'anuncio':{
+                    $objectSee = AnunciosDescuento::whereRaw('anuncio=?',[$state])->with('eventos','usuarios')->get();
                     break;
                 }
-                case 'type':{
-                    $objectSee = AnunciosDescuento::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                case 'state':{
+                    $objectSee = AnunciosDescuento::whereRaw('state=?',[$state])->with('eventos','usuarios')->get();
+                    break;
+                }
+                case 'evento_descuento_area':{
+                    $objectSee = AnunciosDescuento::whereRaw('evento_descuento_area=?',[$state])->with('eventos','usuarios')->get();
                     break;
                 }
                 default:{
-                    $objectSee = AnunciosDescuento::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = AnunciosDescuento::whereRaw('state=?',[$state])->with('eventos','usuarios')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = AnunciosDescuento::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = AnunciosDescuento::with('eventos','usuarios')->get();
         }
     
         if ($objectSee) {
@@ -73,8 +77,8 @@ class AnunciosDescuentoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'anuncio'          => 'required',
+            'evento_descuento_area'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +91,12 @@ class AnunciosDescuentoController extends Controller
         else {
             try {
                 $newObject = new AnunciosDescuento();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
+                $newObject->anuncio            = $request->get('anuncio');
+                $newObject->evento_descuento_area            = $request->get('evento_descuento_area');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -146,7 +155,12 @@ class AnunciosDescuentoController extends Controller
         $objectUpdate = AnunciosDescuento::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('column', $objectUpdate->column);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->anuncio = $request->get('anuncio', $objectUpdate->anuncio);
+                $objectUpdate->evento_descuento_area = $request->get('evento_descuento_area', $objectUpdate->evento_descuento_area);
     
                 $objectUpdate->save();
                 return Response::json($objectUpdate, 200);

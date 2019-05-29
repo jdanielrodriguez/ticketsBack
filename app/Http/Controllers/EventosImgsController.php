@@ -24,21 +24,21 @@ class EventosImgsController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'state':{
-                    $objectSee = EventosImgs::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosImgs::whereRaw('state=?',[$state])->with('eventos')->get();
                     break;
                 }
-                case 'type':{
-                    $objectSee = EventosImgs::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                case 'evento':{
+                    $objectSee = EventosImgs::whereRaw('evento=?',[$state])->with('eventos')->get();
                     break;
                 }
                 default:{
-                    $objectSee = EventosImgs::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosImgs::whereRaw('evento=? and state=?',[$id,$state])->with('eventos')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = EventosImgs::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = EventosImgs::whereRaw('evento=?',[$id])->with('eventos')->get();
         }
     
         if ($objectSee) {
@@ -73,8 +73,8 @@ class EventosImgsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'evento'          => 'required',
+            'url'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +87,12 @@ class EventosImgsController extends Controller
         else {
             try {
                 $newObject = new EventosImgs();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->url            = $request->get('url');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
+                $newObject->evento            = $request->get('evento');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -146,7 +151,12 @@ class EventosImgsController extends Controller
         $objectUpdate = EventosImgs::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('column', $objectUpdate->column);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->url = $request->get('url', $objectUpdate->url);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->evento = $request->get('evento', $objectUpdate->evento);
     
                 $objectUpdate->save();
                 return Response::json($objectUpdate, 200);

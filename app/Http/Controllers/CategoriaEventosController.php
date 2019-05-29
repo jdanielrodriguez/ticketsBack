@@ -24,21 +24,17 @@ class CategoriaEventosController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'state':{
-                    $objectSee = CategoriaEventos::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
-                    break;
-                }
-                case 'type':{
-                    $objectSee = CategoriaEventos::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                    $objectSee = CategoriaEventos::whereRaw('state=?',[$id,$state])->get();
                     break;
                 }
                 default:{
-                    $objectSee = CategoriaEventos::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = CategoriaEventos::whereRaw('state=?',[$id,$state])->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = CategoriaEventos::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = CategoriaEventos::all();
         }
     
         if ($objectSee) {
@@ -73,8 +69,7 @@ class CategoriaEventosController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'titulo'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +82,10 @@ class CategoriaEventosController extends Controller
         else {
             try {
                 $newObject = new CategoriaEventos();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -146,7 +144,10 @@ class CategoriaEventosController extends Controller
         $objectUpdate = CategoriaEventos::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('column', $objectUpdate->column);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
     
                 $objectUpdate->save();
                 return Response::json($objectUpdate, 200);

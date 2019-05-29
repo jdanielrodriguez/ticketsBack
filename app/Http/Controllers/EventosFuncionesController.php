@@ -23,22 +23,46 @@ class EventosFuncionesController extends Controller
     {
         if($request->get('filter')){
             switch ($request->get('filter')) {
-                case 'state':{
-                    $objectSee = EventosFunciones::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                case 'evento':{
+                    $objectSee = EventosFunciones::whereRaw('evento=?',[$state])->with('eventos')->get();
                     break;
                 }
-                case 'type':{
-                    $objectSee = EventosFunciones::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                case 'proximos':{
+                    $objectSee = EventosFunciones::whereRaw('fecha_inicio>? and hora_inicio>?',[$id,$state])->with('eventos')->get();
+                    break;
+                }
+                case 'actuales':{
+                    $objectSee = EventosFunciones::whereRaw('fecha_fin>? and hora_fin>?',[$id,$state])->with('eventos')->get();
+                    break;
+                }
+                case 'pasados':{
+                    $objectSee = EventosFunciones::whereRaw('fecha_fin<? and hora_fin<?',[$id,$state])->with('eventos')->get();
+                    break;
+                }
+                case 'proximos_eventos':{
+                    $objectSee = EventosFunciones::whereRaw('inicio>? and evento=?',[$state,$id])->with('eventos')->get();
+                    break;
+                }
+                case 'actuales_eventos':{
+                    $objectSee = EventosFunciones::whereRaw('fin>? and evento=?',[$state,$id])->with('eventos')->get();
+                    break;
+                }
+                case 'pasados_eventos':{
+                    $objectSee = EventosFunciones::whereRaw('fin<? and evento=?',[$state,$id])->with('eventos')->get();
+                    break;
+                }
+                case 'evento':{
+                    $objectSee = EventosFunciones::whereRaw('evento=?',[$id])->with('eventos')->get();
                     break;
                 }
                 default:{
-                    $objectSee = EventosFunciones::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosFunciones::whereRaw('evento=? and state=?',[$id,$state])->with('eventos')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = EventosFunciones::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = EventosFunciones::whereRaw('evento=?',[$id])->with('eventos')->get();
         }
     
         if ($objectSee) {
@@ -73,8 +97,9 @@ class EventosFuncionesController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'evento'          => 'required',
+            'inicio'          => 'required',
+            'fin'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +112,21 @@ class EventosFuncionesController extends Controller
         else {
             try {
                 $newObject = new EventosFunciones();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->imagen            = $request->get('imagen');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->direccion            = $request->get('direccion');
+                $newObject->hora_inicio            = $request->get('hora_inicio');
+                $newObject->hora_fin            = $request->get('hora_fin');
+                $newObject->fecha_inicio            = $request->get('fecha_inicio');
+                $newObject->fecha_fin            = $request->get('fecha_fin');
+                $newObject->inicio            = $request->get('inicio');
+                $newObject->fin            = $request->get('fin');
+                $newObject->latitud            = $request->get('latitud');
+                $newObject->longitud            = $request->get('longitud');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
+                $newObject->evento            = $request->get('evento');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -98,41 +137,6 @@ class EventosFuncionesController extends Controller
                 );
                 return Response::json($returnData, 500);
             }
-        }
-    }
-    
-    public function uploadAvatar(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'avatar'      => 'required|image|mimes:jpeg,png,jpg'
-        ]);
-    
-        if ($validator->fails()) {
-            $returnData = array(
-                'status' => 400,
-                'message' => 'Invalid Parameters',
-                'validator' => $validator->messages()->toJson()
-            );
-            return Response::json($returnData, 400);
-        }
-        else {
-            try {
-    
-                $path = Storage::disk('s3')->put($request->carpeta, $request->avatar);
-    
-                $objectUpdate->picture = Storage::disk('s3')->url($path);
-                $objectUpdate->save();
-    
-                return Response::json($objectUpdate, 200);
-    
-            }
-            catch (Exception $e) {
-                $returnData = array(
-                    'status' => 500,
-                    'message' => $e->getMessage()
-                );
-            }
-    
         }
     }
     
@@ -182,10 +186,23 @@ class EventosFuncionesController extends Controller
         $objectUpdate = EventosFunciones::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('get', $objectUpdate->column);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
+                $objectUpdate->imagen = $request->get('imagen', $objectUpdate->imagen);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->direccion = $request->get('direccion', $objectUpdate->direccion);
+                $objectUpdate->hora_inicio = $request->get('hora_inicio', $objectUpdate->hora_inicio);
+                $objectUpdate->hora_fin = $request->get('hora_fin', $objectUpdate->hora_fin);
+                $objectUpdate->fecha_inicio = $request->get('fecha_inicio', $objectUpdate->fecha_inicio);
+                $objectUpdate->fecha_fin = $request->get('fecha_fin', $objectUpdate->fecha_fin);
+                $objectUpdate->inicio = $request->get('inicio', $objectUpdate->inicio);
+                $objectUpdate->fin = $request->get('fin', $objectUpdate->fin);
+                $objectUpdate->latitud = $request->get('latitud', $objectUpdate->latitud);
+                $objectUpdate->longitud = $request->get('longitud', $objectUpdate->longitud);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->evento = $request->get('evento', $objectUpdate->evento);
     
                 $objectUpdate->save();
-    $objectUpdate->function;
                 return Response::json($objectUpdate, 200);
             } catch (Exception $e) {
                 $returnData = array (

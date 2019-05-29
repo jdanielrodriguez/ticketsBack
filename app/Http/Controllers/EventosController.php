@@ -24,21 +24,29 @@ class EventosController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'state':{
-                    $objectSee = Eventos::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = Eventos::whereRaw('state=?',[$state])->with('usuarios','categorias','tipos')->get();
                     break;
                 }
-                case 'type':{
-                    $objectSee = Eventos::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                case 'usuario':{
+                    $objectSee = Eventos::whereRaw('usuario=?',[$state])->with('usuarios','categorias','tipos')->get();
+                    break;
+                }
+                case 'categoria':{
+                    $objectSee = Eventos::whereRaw('categoria=?',[$state])->with('usuarios','categorias','tipos')->get();
+                    break;
+                }
+                case 'tipo':{
+                    $objectSee = Eventos::whereRaw('tipo=?',[$state])->with('usuarios','categorias','tipos')->get();
                     break;
                 }
                 default:{
-                    $objectSee = Eventos::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = Eventos::whereRaw('state=?',[$state])->with('usuarios','categorias','tipos')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = Eventos::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = Eventos::with('usuarios','categorias','tipos')->get();
         }
     
         if ($objectSee) {
@@ -73,8 +81,8 @@ class EventosController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'usuario'          => 'required',
+            'tipo'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +95,13 @@ class EventosController extends Controller
         else {
             try {
                 $newObject = new Eventos();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
+                $newObject->usuario            = $request->get('usuario');
+                $newObject->categoria            = $request->get('categoria');
+                $newObject->tipo            = $request->get('tipo');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -146,7 +160,13 @@ class EventosController extends Controller
         $objectUpdate = Eventos::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('column', $objectUpdate->column);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->usuario = $request->get('usuario', $objectUpdate->usuario);
+                $objectUpdate->categoria = $request->get('categoria', $objectUpdate->categoria);
+                $objectUpdate->tipo = $request->get('tipo', $objectUpdate->tipo);
     
                 $objectUpdate->save();
                 return Response::json($objectUpdate, 200);

@@ -24,21 +24,25 @@ class EventosFuncionesAreaLugarController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'state':{
-                    $objectSee = EventosFuncionesAreaLugar::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosFuncionesAreaLugar::whereRaw('evento_funcion_area=? and state=?',[$id,$state])->with('eventos')->get();
                     break;
                 }
-                case 'type':{
-                    $objectSee = EventosFuncionesAreaLugar::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                case 'butaca':{
+                    $objectSee = EventosFuncionesAreaLugar::whereRaw('evento_funcion_area=? and butaca=?',[$id,$state])->with('eventos')->get();
+                    break;
+                }
+                case 'vendido':{
+                    $objectSee = EventosFuncionesAreaLugar::whereRaw('evento_funcion_area=? and vendido=?',[$id,$state])->with('eventos')->get();
                     break;
                 }
                 default:{
-                    $objectSee = EventosFuncionesAreaLugar::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosFuncionesAreaLugar::whereRaw('evento_funcion_area=? and state=?',[$id,$state])->with('eventos')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = EventosFuncionesAreaLugar::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = EventosFuncionesAreaLugar::whereRaw('evento_funcion_area=?',[$id])->with('eventos')->get();
         }
     
         if ($objectSee) {
@@ -73,8 +77,8 @@ class EventosFuncionesAreaLugarController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'evento_funcion_area'          => 'required',
+            'butaca'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +91,15 @@ class EventosFuncionesAreaLugarController extends Controller
         else {
             try {
                 $newObject = new EventosFuncionesAreaLugar();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->lugar            = $request->get('lugar');
+                $newObject->numero            = $request->get('numero');
+                $newObject->butaca            = $request->get('butaca');
+                $newObject->vendido            = $request->get('vendido');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
+                $newObject->evento_funcion_area            = $request->get('evento_funcion_area');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -146,7 +158,15 @@ class EventosFuncionesAreaLugarController extends Controller
         $objectUpdate = EventosFuncionesAreaLugar::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('column', $objectUpdate->column);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->lugar = $request->get('lugar', $objectUpdate->lugar);
+                $objectUpdate->numero = $request->get('numero', $objectUpdate->numero);
+                $objectUpdate->butaca = $request->get('butaca', $objectUpdate->butaca);
+                $objectUpdate->vendido = $request->get('vendido', $objectUpdate->vendido);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->evento_funcion_area = $request->get('evento_funcion_area', $objectUpdate->evento_funcion_area);
     
                 $objectUpdate->save();
                 return Response::json($objectUpdate, 200);

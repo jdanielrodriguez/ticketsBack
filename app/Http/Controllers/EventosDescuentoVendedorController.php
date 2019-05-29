@@ -24,21 +24,25 @@ class EventosDescuentoVendedorController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'state':{
-                    $objectSee = EventosDescuentoVendedor::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosDescuentoVendedor::whereRaw('state=?',[$state])->with('vendedores','descuentos')->get();
                     break;
                 }
-                case 'type':{
-                    $objectSee = EventosDescuentoVendedor::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                case 'evento_descuento_area':{
+                    $objectSee = EventosDescuentoVendedor::whereRaw('evento_descuento_area=?',[$state])->with('vendedores','descuentos')->get();
+                    break;
+                }
+                case 'evento_vendedor':{
+                    $objectSee = EventosDescuentoVendedor::whereRaw('evento_vendedor=?',[$state])->with('vendedores','descuentos')->get();
                     break;
                 }
                 default:{
-                    $objectSee = EventosDescuentoVendedor::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosDescuentoVendedor::whereRaw('state=?',[$state])->with('vendedores','descuentos')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = EventosDescuentoVendedor::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = EventosDescuentoVendedor::with('vendedores','descuentos')->get();
         }
     
         if ($objectSee) {
@@ -73,8 +77,8 @@ class EventosDescuentoVendedorController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'evento_descuento_area'          => 'required',
+            'evento_vendedor'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +91,12 @@ class EventosDescuentoVendedorController extends Controller
         else {
             try {
                 $newObject = new EventosDescuentoVendedor();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
+                $newObject->evento_descuento_area            = $request->get('evento_descuento_area');
+                $newObject->evento_vendedor            = $request->get('evento_vendedor');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -146,7 +155,12 @@ class EventosDescuentoVendedorController extends Controller
         $objectUpdate = EventosDescuentoVendedor::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('column', $objectUpdate->column);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->evento_descuento_area = $request->get('evento_descuento_area', $objectUpdate->evento_descuento_area);
+                $objectUpdate->evento_vendedor = $request->get('evento_vendedor', $objectUpdate->evento_vendedor);
     
                 $objectUpdate->save();
                 return Response::json($objectUpdate, 200);
