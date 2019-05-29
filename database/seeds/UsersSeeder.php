@@ -60,7 +60,6 @@ class UsersSeeder extends Seeder
         ]);
 
 
-
         DB::table('categoria_eventos')->insert([
             'titulo'       => 'Otros',
             'descripcion'       => 'Otro tipo de eventos',
@@ -79,9 +78,26 @@ class UsersSeeder extends Seeder
             'descripcion'       => "",
             'nacimiento'          => "1995-01-06",
             'state'             => 1,
+            'rol'             => 1,
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
+
+        DB::table('users')->insert([
+            "id"                => 2,
+            'username'          =>  "jdrodriguezr61",
+            'password'          => bcrypt('foxylabs'),
+            'email'             => "jdrodriguezr61@gmail.com",
+            'nombres'         => "Daniel",
+            'apellidos'          => "Rodriguez",
+            'descripcion'       => "Vendedor del sistema",
+            'nacimiento'          => "1995-01-06",
+            'state'             => 1,
             'rol'             => 2,
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
+
+
     }
 }
