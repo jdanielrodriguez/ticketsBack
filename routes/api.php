@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 Route::resource('users', 'UsersController');
+Route::resource('roles', 'RolesController');
 Route::resource('anuncios', 'AnunciosController');
 Route::resource('anunciosdescuentos', 'AnunciosDescuentosController');
 Route::resource('categoriaeventos', 'CategoriaEventosController');

@@ -19,6 +19,55 @@ class UsersSeeder extends Seeder
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
+        DB::table('roles')->insert([
+            'titulo'       => 'Usuario',
+            'descripcion'       => 'Usuario Comun del sistema',
+            'state'       => 1,
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
+
+        DB::table('roles')->insert([
+            'titulo'       => 'Cliente',
+            'descripcion'       => 'Cliente de entradas en el sistema',
+            'state'       => 1,
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
+
+        DB::table('categoria_eventos')->insert([
+            'titulo'       => 'Educacion',
+            'descripcion'       => 'Actividades Educativas',
+            'state'       => 1,
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
+
+        DB::table('categoria_eventos')->insert([
+            'titulo'       => 'Concierto',
+            'descripcion'       => 'Conciertos de Musica',
+            'state'       => 1,
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
+
+        DB::table('categoria_eventos')->insert([
+            'titulo'       => 'Conferencias',
+            'descripcion'       => 'Conferencias Educativas',
+            'state'       => 1,
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
+
+
+
+        DB::table('categoria_eventos')->insert([
+            'titulo'       => 'Otros',
+            'descripcion'       => 'Otro tipo de eventos',
+            'state'       => 1,
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
 
         DB::table('users')->insert([
             "id"                => 1,
@@ -30,7 +79,7 @@ class UsersSeeder extends Seeder
             'descripcion'       => "",
             'nacimiento'          => "1995-01-06",
             'state'             => 1,
-            'rol'             => 1,
+            'rol'             => 2,
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);

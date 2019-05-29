@@ -28,15 +28,15 @@ class EventosFuncionesController extends Controller
                     break;
                 }
                 case 'proximos':{
-                    $objectSee = EventosFunciones::whereRaw('fecha_inicio>? and hora_inicio>?',[$id,$state])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('fecha_inicio>?',[$id])->with('eventos')->get();
                     break;
                 }
                 case 'actuales':{
-                    $objectSee = EventosFunciones::whereRaw('fecha_fin>? and hora_fin>?',[$id,$state])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('inicio<? and fin>?',[$id])->with('eventos')->get();
                     break;
                 }
                 case 'pasados':{
-                    $objectSee = EventosFunciones::whereRaw('fecha_fin<? and hora_fin<?',[$id,$state])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('fecha_fin<?',[$id,$state])->with('eventos')->get();
                     break;
                 }
                 case 'proximos_eventos':{

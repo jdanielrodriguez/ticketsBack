@@ -82,7 +82,7 @@ class EventosController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'usuario'          => 'required',
-            'tipo'          => 'required',
+            'titulo'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
