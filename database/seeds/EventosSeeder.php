@@ -35,7 +35,7 @@ class EventosSeeder extends Seeder
             'fin'       => '2019-06-21 21:00:00',
             'latitud'       => 0,
             'longitud'       => 0,
-            'type'       => 1,
+            'type'       => 2,
             'state'       => 1,
             'evento'       => 1,
             'created_at'        => date('Y-m-d H:m:s'),

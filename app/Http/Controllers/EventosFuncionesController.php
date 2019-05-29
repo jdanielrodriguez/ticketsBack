@@ -31,6 +31,10 @@ class EventosFuncionesController extends Controller
                     $objectSee = EventosFunciones::whereRaw('fecha_inicio>?',[$id])->with('eventos')->get();
                     break;
                 }
+                case 'proximos-principales':{
+                    $objectSee = EventosFunciones::whereRaw('fecha_inicio>? and type=2',[$id])->with('eventos')->get();
+                    break;
+                }
                 case 'actuales':{
                     $objectSee = EventosFunciones::whereRaw('inicio<? and fin>?',[$id])->with('eventos')->get();
                     break;
