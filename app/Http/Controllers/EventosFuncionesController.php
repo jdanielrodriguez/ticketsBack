@@ -31,6 +31,10 @@ class EventosFuncionesController extends Controller
                     $objectSee = EventosFunciones::whereRaw('fecha_inicio>?',[$id])->with('eventos')->get();
                     break;
                 }
+                case 'buscar':{
+                    $objectSee = EventosFunciones::whereRaw('fecha_inicio=? and titulo=?',[$state,$id])->with('eventos')->first();
+                    break;
+                }
                 case 'proximos-principales':{
                     $objectSee = EventosFunciones::whereRaw('fecha_inicio>? and type=2',[$id])->with('eventos')->get();
                     break;
@@ -44,15 +48,15 @@ class EventosFuncionesController extends Controller
                     break;
                 }
                 case 'proximos_eventos':{
-                    $objectSee = EventosFunciones::whereRaw('inicio>? and evento=?',[$state,$id])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('inicio>? and evento=?',[$state,$id])->with('eventos','areas')->get();
                     break;
                 }
                 case 'actuales_eventos':{
-                    $objectSee = EventosFunciones::whereRaw('fin>? and evento=?',[$state,$id])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('fin>? and evento=?',[$state,$id])->with('eventos','areas')->get();
                     break;
                 }
                 case 'pasados_eventos':{
-                    $objectSee = EventosFunciones::whereRaw('fin<? and evento=?',[$state,$id])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('fin<? and evento=?',[$state,$id])->with('eventos','areas')->get();
                     break;
                 }
                 case 'evento':{

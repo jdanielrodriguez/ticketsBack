@@ -121,7 +121,7 @@ class EventosFuncionesAreaLugarController extends Controller
     */
     public function show($id)
     {
-        $objectSee = EventosFuncionesAreaLugar::find($id);
+        $objectSee = EventosFuncionesAreaLugar::with('eventos')->find($id);
         if ($objectSee) {
             return Response::json($objectSee, 200);
     

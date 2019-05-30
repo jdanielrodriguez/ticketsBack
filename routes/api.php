@@ -27,6 +27,7 @@ Route::resource('eventosfunciones', 'EventosFuncionesController');
 Route::resource('eventosimgs', 'EventosImgsController');
 Route::resource('eventosvendedor', 'EventosVendedorController');
 Route::resource('eventosvendedormensajeria', 'EventosVendedorMensajeriaController');
+Route::resource('eventosventa', 'EventosVentaController');
 
 Route::get('filter/{id}/anuncios/{state}', "AnunciosController@getThisByFilter");
 Route::get('filter/{id}/anunciosdescuentos/{state}', "AnunciosDescuentosController@getThisByFilter");
@@ -41,12 +42,14 @@ Route::get('filter/{id}/eventosfunciones/{state}', "EventosFuncionesController@g
 Route::get('filter/{id}/eventosimgs/{state}', "EventosImgsController@getThisByFilter");
 Route::get('filter/{id}/eventosvendedor/{state}', "EventosVendedorController@getThisByFilter");
 Route::get('filter/{id}/eventosvendedormensajeria/{state}', "EventosVendedorMensajeriaController@getThisByFilter");
+Route::get('filter/{id}/eventosventa/{state}', "EventosVentaController@getThisByFilter");
 
 Route::get('rol/{id}/users', "Users@getUsersByRol");
 
 Route::post('users/password/reset', 'UsersController@recoveryPassword');
 Route::post('users/{id}/changepassword', "UsersController@changePassword");
 
+Route::post('pagar', 'EventosVentaController@pagar');
 Route::post('login', 'AuthenticateController@login');
 Route::post('upload', 'AuthenticateController@uploadAvatar');
 

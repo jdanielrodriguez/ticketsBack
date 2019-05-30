@@ -15,4 +15,8 @@ class EventosFuncionesArea extends Model
     public function eventos(){
         return $this->hasOne('App\EventosFunciones','id','evento_funcion')->with('eventos');
     }
+
+    public function lugares(){
+        return $this->hasMany('App\EventosFuncionesAreaLugar','evento_funcion_area','id')->with('eventos');
+    }
 }

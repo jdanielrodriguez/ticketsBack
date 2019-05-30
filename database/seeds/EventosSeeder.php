@@ -54,6 +54,22 @@ class EventosSeeder extends Seeder
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
+        for ($i=0; $i < 100; $i++) { 
+            DB::table('eventos_funciones_area_lugar')->insert([
+                'titulo'       => 'Silla',
+                'descripcion'       => null,
+                'lugar'       => $i+1,
+                'butaca'       => $i+1,
+                'numero'       => $i+1,
+                'vendido'       => '0',
+                'type'       => 1,
+                'state'       => 1,
+                'evento_funcion_area'       => 1,
+                'created_at'        => date('Y-m-d H:m:s'),
+                'updated_at'        => date('Y-m-d H:m:s')
+            ]);
+        }
+        
 
         DB::table('eventos_funciones_area')->insert([
             'titulo'       => 'Taller y Jurgen Klaric preferencia',
@@ -67,6 +83,21 @@ class EventosSeeder extends Seeder
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
+        for ($i=0; $i < 50; $i++) { 
+            DB::table('eventos_funciones_area_lugar')->insert([
+                'titulo'       => 'Silla',
+                'descripcion'       => null,
+                'lugar'       => $i+1,
+                'butaca'       => $i+1,
+                'numero'       => $i+1,
+                'vendido'       => '0',
+                'type'       => 1,
+                'state'       => 1,
+                'evento_funcion_area'       => 2,
+                'created_at'        => date('Y-m-d H:m:s'),
+                'updated_at'        => date('Y-m-d H:m:s')
+            ]);
+        }
 
 
 
@@ -82,6 +113,21 @@ class EventosSeeder extends Seeder
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
+        for ($i=0; $i < 25; $i++) { 
+            DB::table('eventos_funciones_area_lugar')->insert([
+                'titulo'       => 'Silla',
+                'descripcion'       => null,
+                'lugar'       => $i+1,
+                'butaca'       => $i+1,
+                'numero'       => $i+1,
+                'vendido'       => '0',
+                'type'       => 1,
+                'state'       => 1,
+                'evento_funcion_area'       => 3,
+                'created_at'        => date('Y-m-d H:m:s'),
+                'updated_at'        => date('Y-m-d H:m:s')
+            ]);
+        }
 
 
 
@@ -97,5 +143,20 @@ class EventosSeeder extends Seeder
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
+        for ($i=0; $i < 15; $i++) { 
+            DB::table('eventos_funciones_area_lugar')->insert([
+                'titulo'       => 'Silla',
+                'descripcion'       => null,
+                'lugar'       => $i+1,
+                'butaca'       => $i+1,
+                'numero'       => $i+1,
+                'vendido'       => '0',
+                'type'       => 1,
+                'state'       => 1,
+                'evento_funcion_area'       => 4,
+                'created_at'        => date('Y-m-d H:m:s'),
+                'updated_at'        => date('Y-m-d H:m:s')
+            ]);
+        }
     }
 }
