@@ -320,8 +320,22 @@ class EventosVentaController extends Controller
         
         }
     }
-    public function comprobanteCompra($id,Request $request)
+    public function comprobanteCompra(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'token'          => 'required',
+            'ern'            => 'required'
+        ]);
+        if ( $validator->fails() ) {
+            $returnData = array (
+                'status' => 400,
+                'message' => 'No ha llenado los campos adecuadamente.',
+                'validator' => $validator
+            );
+            return Response::json($returnData, 400);
+        }else{
+
+        }
         if ($request->get('token')) {
             /*
              * Lo primero es crear el objeto Pagadito, al que se le pasa como
@@ -378,121 +392,23 @@ class EventosVentaController extends Controller
                             /*
                              * Tratamiento para una transacción exitosa.
                              */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
-                             $objectUpdate = Orders::find($id);
-                                if ($objectUpdate) {
-                                    if(!$objectUpdate->token && !$objectUpdate->aprobacion && !$objectUpdate->fechaapro){
-                                        $returnData11 = array (
-                                            'status' => 200,
-                                            'token' => $request->get('token'),
-                                            'aprobacion' => $Pagadito->get_rs_reference(),
-                                            'fecha' => $Pagadito->get_rs_date_trans(),
-                                            'message' => 'Compra Exitosa'
-                                        );
-                                        try {
-                                            if($objectUpdate->token==NULL){
-                                                $objectUpdate->token = $request->get('token', $objectUpdate->token);
-                                                $objectUpdate->aprobacion = $Pagadito->get_rs_reference();
-                                                $objectUpdate->fechaapro = $Pagadito->get_rs_date_trans();
-                                                $objectUpdate->state              = 1;
-                                                $objectUpdate->save();
-                                                $objectSee = Users::find($objectUpdate->user);
-                                                if ($objectSee) {
-                                                    $objectSeeProducts = Products::find($objectUpdate->product);
-                                                    if($objectSeeProducts){
-                                                        if($objectSeeProducts->membresia=="1"){
-                                                            try {
-                                                                    $fecha = date('Y-m-j');
-                                                                    $perioro = "";
-                                                                    switch ($objectSeeProducts->periodo) {
-                                                                        case '1':{
-                                                                            $perioro="day";
-                                                                            break;
-                                                                        }
-                                                                        case '2':{
-                                                                            $perioro="month";
-                                                                            break;
-                                                                        }
-                                                                        case '3':{
-                                                                            $perioro="year";
-                                                                            break;
-                                                                        }
-                                                                        default:{
-                                                                            $perioro="day";
-                                                                            break;
-                                                                        }
-                                                                    }
-                                                                    $nuevafecha = strtotime ( '+'.$objectSeeProducts->tiempo.' '.$perioro , strtotime ( $fecha ) ) ;
-                                                                    $nuevafecha = date ( 'Y-m-j' , $nuevafecha );
-                                                                    $objectSee->membresia = $objectSeeProducts->id;
-                                                                    $objectSee->inicioMembresia = $fecha;
-                                                                    $objectSee->finMembresia = $nuevafecha;
-                                                                    $objectSee->tipoNivel = $objectSeeProducts->tipo;
-                                                                    $objectSee->nivelMembresia = $objectSeeProducts->nivel;
-                                                                    $objectSee->save();
-                                                                
-                                                            } catch (Exception $e) {
-                                                                $returnData = array (
-                                                                    'status' => 500,
-                                                                    'message' => $e->getMessage()
-                                                                );
-                                                                return Response::json($returnData, 500);
-                                                            }
-                                                        }else{
-                                                            if($objectSeeProducts->quantity!='null'){
-                                                                if($objectSeeProducts->quantity>0){
-                                                                    $objectSeeProducts->quantity = $objectSeeProducts->quantity - $objectUpdate->quantity;
-                                                                    $objectSeeProducts->save();
-                                                                }
-                                                            }
-                                                        }
-                                                        
-                                                    }
-                                                    Mail::send('emails.pago', ['empresa' => 'GTechnology', 'url' => 'http://gtechnology.gt', 'app' => 'http://me.gtechnology.gt', 'autorizacion' => $Pagadito->get_rs_reference(), 'fecha' => $Pagadito->get_rs_date_trans(), 'username' => $objectSee->username, 'email' => $objectSee->email, 'name' => $objectSee->firstname.' '.$objectSee->lastname,], function (Message $message) use ($objectSee){
-                                                        $message->from('info@foxylabs.gt', 'Info GTechnology')
-                                                                ->sender('info@foxylabs.gt', 'Info GTechnology')
-                                                                ->to($objectSee->email, $objectSee->firstname.' '.$objectSee->lastname)
-                                                                ->replyTo('info@foxylabs.gt', 'Info GTechnology')
-                                                                ->subject('Comprobante de Pago');
-                                                    });
-                                                
-                                                }
-                                                else {
-                                                    $returnData = array (
-                                                        'status' => 404,
-                                                        'message' => 'No record found'
-                                                    );
-                                                    return Response::json($returnData, 404);
-                                                }
-                                            
-                                            }
-                                        } catch (Exception $e) {
-                                            $returnData = array (
-                                                'status' => 500,
-                                                'message' => $e->getMessage()
-                                            );
-                                            return Response::json($returnData, 500);
-                                        }
-                                        return Response::json($returnData11, 200);
-                                    }else{
-                                        $returnData11 = array (
-                                            'status' => 200,
-                                            'token' => $objectUpdate->token,
-                                            'aprobacion' => $objectUpdate->aprobacion,
-                                            'fecha' => $objectUpdate->fechaapro,
-                                            'message' => 'Compra Exitosa'
-                                        );
-                                        return Response::json($returnData11, 200);
-                                    }
-                                    
-                                }
-                                else {
-                                    $returnData = array (
-                                        'status' => 404,
-                                        'message' => 'No record found'
-                                    );
-                                    return Response::json($returnData, 404);
-                                }
-                            }
+                             $returnData11 = array (
+                                'status' => 200,
+                                'token' => $request->get('token'),
+                                'aprobacion' => $Pagadito->get_rs_reference(),
+                                'fecha' => $Pagadito->get_rs_date_trans(),
+                                'message' => 'Compra Exitosa'
+                            );
+                            return Response::json($returnData11, 200);
+                            Mail::send('emails.pago', ['empresa' => 'GTechnology', 'url' => 'http://gtechnology.gt', 'app' => 'http://me.gtechnology.gt', 'autorizacion' => $Pagadito->get_rs_reference(), 'fecha' => $Pagadito->get_rs_date_trans(), 'username' => $objectSee->username, 'email' => $objectSee->email, 'name' => $objectSee->firstname.' '.$objectSee->lastname,], function (Message $message) use ($objectSee){
+                                $message->from('info@foxylabs.gt', 'Info GTechnology')
+                                        ->sender('info@foxylabs.gt', 'Info GTechnology')
+                                        ->to($objectSee->email, $objectSee->firstname.' '.$objectSee->lastname)
+                                        ->replyTo('info@foxylabs.gt', 'Info GTechnology')
+                                        ->subject('Comprobante de Pago');
+                            });
+                            
+                        }
                         
                         case "REGISTERED":{
                             
