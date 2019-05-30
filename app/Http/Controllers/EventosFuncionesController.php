@@ -128,8 +128,8 @@ class EventosFuncionesController extends Controller
                 $newObject->hora_fin            = $request->get('hora_fin');
                 $newObject->fecha_inicio            = $request->get('fecha_inicio');
                 $newObject->fecha_fin            = $request->get('fecha_fin');
-                $newObject->inicio            = $request->get('inicio');
-                $newObject->fin            = $request->get('fin');
+                $newObject->inicio            = $request->get('fecha_inicio')." ".$request->get('hora_inicio');
+                $newObject->fin            = $request->get('fecha_fin')." ".$request->get('hora_fin');
                 $newObject->latitud            = $request->get('latitud');
                 $newObject->longitud            = $request->get('longitud');
                 $newObject->type            = $request->get('type');

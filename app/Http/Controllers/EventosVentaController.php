@@ -23,22 +23,46 @@ class EventosVentaController extends Controller
     {
         if($request->get('filter')){
             switch ($request->get('filter')) {
-                case 'state':{
-                    $objectSee = EventosVenta::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                case 'usuario':{
+                    $objectSee = EventosVenta::whereRaw('usuario=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
                     break;
                 }
-                case 'type':{
-                    $objectSee = EventosVenta::whereRaw('user=? and tipo=?',[$id,$state])->with('user')->get();
+                case 'evento':{
+                    $objectSee = EventosVenta::whereRaw('evento=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    break;
+                }
+                case 'usuario_evento':{
+                    $objectSee = EventosVenta::whereRaw('usuario=? and evento=?',[$id,$state])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    break;
+                }
+                case 'evento_funcion':{
+                    $objectSee = EventosVenta::whereRaw('evento_funcion=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    break;
+                }
+                case 'evento_funcion_area_lugar':{
+                    $objectSee = EventosVenta::whereRaw('evento_funcion_area_lugar=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    break;
+                }
+                case 'evento_vendedor':{
+                    $objectSee = EventosVenta::whereRaw('evento_vendedor=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    break;
+                }
+                case 'evento_funcion_evento_vendedor':{
+                    $objectSee = EventosVenta::whereRaw('evento_funcion=? and evento_vendedor=?',[$id,$state])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    break;
+                }
+                case 'evento_funcion_usuario':{
+                    $objectSee = EventosVenta::whereRaw('evento_funcion=? and usuario=?',[$id,$state])->with('usuarios','eventos','area','vendedores','descuentos')->get();
                     break;
                 }
                 default:{
-                    $objectSee = EventosVenta::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+                    $objectSee = EventosVenta::whereRaw('usuario=? and state=?',[$id,$state])->with('usuarios','eventos','area','vendedores','descuentos')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = EventosVenta::whereRaw('user=? and state=?',[$id,$state])->with('user')->get();
+            $objectSee = EventosVenta::whereRaw('usuario=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
         }
     
         if ($objectSee) {
@@ -73,8 +97,8 @@ class EventosVentaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            ''          => 'required',
-            ''          => 'required',
+            'usuario'          => 'required',
+            'evento_funcion_area_lugar'          => 'required',
         ]);
         if ( $validator->fails() ) {
             $returnData = array (
@@ -87,7 +111,23 @@ class EventosVentaController extends Controller
         else {
             try {
                 $newObject = new EventosVenta();
-                $newObject->column            = $request->get('column');
+                $newObject->titulo            = $request->get('titulo');
+                $newObject->lugar            = $request->get('lugar');
+                $newObject->codigo            = $request->get('codigo');
+                $newObject->precio            = $request->get('precio');
+                $newObject->cantidad            = $request->get('cantidad');
+                $newObject->total            = $request->get('total');
+                $newObject->descripcion            = $request->get('descripcion');
+                $newObject->latitud            = $request->get('latitud');
+                $newObject->longitud            = $request->get('longitud');
+                $newObject->type            = $request->get('type');
+                $newObject->state            = $request->get('state');
+                $newObject->usuario            = $request->get('usuario');
+                $newObject->evento            = $request->get('evento');
+                $newObject->evento_funcion            = $request->get('evento_funcion');
+                $newObject->evento_funcion_area_lugar            = $request->get('evento_funcion_area_lugar');
+                $newObject->evento_vendedor            = $request->get('evento_vendedor');
+                $newObject->evento_descuento            = $request->get('evento_descuento');
                 $newObject->save();
                 return Response::json($newObject, 200);
     
@@ -280,6 +320,329 @@ class EventosVentaController extends Controller
         
         }
     }
+    public function comprobanteCompra($id,Request $request)
+    {
+        if ($request->get('token')) {
+            /*
+             * Lo primero es crear el objeto Pagadito, al que se le pasa como
+             * parámetros el UID y el WSK definidos en config.php
+             */
+            if($request->get("applicacion")){
+                switch ($request->get("applicacion")) {
+                    case '49':{
+                        define("UID", "f000d4c73c37258c9e32d0ad1f26ef05");
+                        define("WSK", "0aa5e92f54d6c0ceb0f058715abbd8c7");
+                        define("SANDBOX", false);
+                        break;
+                    }
+                    
+                    default:{
+                        define("UID", "00a44a36adaab6310e6bf306b9d5969b");
+                        define("WSK", "c6ef3680408284ca1addc87b64c48421");
+                        define("SANDBOX", true);
+                        break;
+                    }
+                }
+            }else{
+                define("UID", "00a44a36adaab6310e6bf306b9d5969b");
+                define("WSK", "c6ef3680408284ca1addc87b64c48421");
+                define("SANDBOX", true);
+            }
+            $Pagadito = new Pagadito(UID, WSK);
+            /*
+             * Si se está realizando pruebas, necesita conectarse con Pagadito SandBox. Para ello llamamos
+             * a la función mode_sandbox_on(). De lo contrario omitir la siguiente linea.
+             */
+            if (SANDBOX) {
+                $Pagadito->mode_sandbox_on();
+            }
+            /*
+             * Validamos la conexión llamando a la función connect(). Retorna
+             * true si la conexión es exitosa. De lo contrario retorna false
+             */
+            if ($Pagadito->connect()) {
+                /*
+                 * Solicitamos el estado de la transacción llamando a la función
+                 * get_status(). Le pasamos como parámetro el token recibido vía
+                 * GET en nuestra URL de retorno.
+                 */
+                if ($Pagadito->get_status($request->get('token'))) {
+
+                    /*
+                     * Luego validamos el estado de la transacción, consultando el
+                     * estado devuelto por la API.
+                     */
+                    switch($Pagadito->get_rs_status())
+                    {
+                        case "COMPLETED":{
+                            /*
+                             * Tratamiento para una transacción exitosa.
+                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                             $objectUpdate = Orders::find($id);
+                                if ($objectUpdate) {
+                                    if(!$objectUpdate->token && !$objectUpdate->aprobacion && !$objectUpdate->fechaapro){
+                                        $returnData11 = array (
+                                            'status' => 200,
+                                            'token' => $request->get('token'),
+                                            'aprobacion' => $Pagadito->get_rs_reference(),
+                                            'fecha' => $Pagadito->get_rs_date_trans(),
+                                            'message' => 'Compra Exitosa'
+                                        );
+                                        try {
+                                            if($objectUpdate->token==NULL){
+                                                $objectUpdate->token = $request->get('token', $objectUpdate->token);
+                                                $objectUpdate->aprobacion = $Pagadito->get_rs_reference();
+                                                $objectUpdate->fechaapro = $Pagadito->get_rs_date_trans();
+                                                $objectUpdate->state              = 1;
+                                                $objectUpdate->save();
+                                                $objectSee = Users::find($objectUpdate->user);
+                                                if ($objectSee) {
+                                                    $objectSeeProducts = Products::find($objectUpdate->product);
+                                                    if($objectSeeProducts){
+                                                        if($objectSeeProducts->membresia=="1"){
+                                                            try {
+                                                                    $fecha = date('Y-m-j');
+                                                                    $perioro = "";
+                                                                    switch ($objectSeeProducts->periodo) {
+                                                                        case '1':{
+                                                                            $perioro="day";
+                                                                            break;
+                                                                        }
+                                                                        case '2':{
+                                                                            $perioro="month";
+                                                                            break;
+                                                                        }
+                                                                        case '3':{
+                                                                            $perioro="year";
+                                                                            break;
+                                                                        }
+                                                                        default:{
+                                                                            $perioro="day";
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    $nuevafecha = strtotime ( '+'.$objectSeeProducts->tiempo.' '.$perioro , strtotime ( $fecha ) ) ;
+                                                                    $nuevafecha = date ( 'Y-m-j' , $nuevafecha );
+                                                                    $objectSee->membresia = $objectSeeProducts->id;
+                                                                    $objectSee->inicioMembresia = $fecha;
+                                                                    $objectSee->finMembresia = $nuevafecha;
+                                                                    $objectSee->tipoNivel = $objectSeeProducts->tipo;
+                                                                    $objectSee->nivelMembresia = $objectSeeProducts->nivel;
+                                                                    $objectSee->save();
+                                                                
+                                                            } catch (Exception $e) {
+                                                                $returnData = array (
+                                                                    'status' => 500,
+                                                                    'message' => $e->getMessage()
+                                                                );
+                                                                return Response::json($returnData, 500);
+                                                            }
+                                                        }else{
+                                                            if($objectSeeProducts->quantity!='null'){
+                                                                if($objectSeeProducts->quantity>0){
+                                                                    $objectSeeProducts->quantity = $objectSeeProducts->quantity - $objectUpdate->quantity;
+                                                                    $objectSeeProducts->save();
+                                                                }
+                                                            }
+                                                        }
+                                                        
+                                                    }
+                                                    Mail::send('emails.pago', ['empresa' => 'GTechnology', 'url' => 'http://gtechnology.gt', 'app' => 'http://me.gtechnology.gt', 'autorizacion' => $Pagadito->get_rs_reference(), 'fecha' => $Pagadito->get_rs_date_trans(), 'username' => $objectSee->username, 'email' => $objectSee->email, 'name' => $objectSee->firstname.' '.$objectSee->lastname,], function (Message $message) use ($objectSee){
+                                                        $message->from('info@foxylabs.gt', 'Info GTechnology')
+                                                                ->sender('info@foxylabs.gt', 'Info GTechnology')
+                                                                ->to($objectSee->email, $objectSee->firstname.' '.$objectSee->lastname)
+                                                                ->replyTo('info@foxylabs.gt', 'Info GTechnology')
+                                                                ->subject('Comprobante de Pago');
+                                                    });
+                                                
+                                                }
+                                                else {
+                                                    $returnData = array (
+                                                        'status' => 404,
+                                                        'message' => 'No record found'
+                                                    );
+                                                    return Response::json($returnData, 404);
+                                                }
+                                            
+                                            }
+                                        } catch (Exception $e) {
+                                            $returnData = array (
+                                                'status' => 500,
+                                                'message' => $e->getMessage()
+                                            );
+                                            return Response::json($returnData, 500);
+                                        }
+                                        return Response::json($returnData11, 200);
+                                    }else{
+                                        $returnData11 = array (
+                                            'status' => 200,
+                                            'token' => $objectUpdate->token,
+                                            'aprobacion' => $objectUpdate->aprobacion,
+                                            'fecha' => $objectUpdate->fechaapro,
+                                            'message' => 'Compra Exitosa'
+                                        );
+                                        return Response::json($returnData11, 200);
+                                    }
+                                    
+                                }
+                                else {
+                                    $returnData = array (
+                                        'status' => 404,
+                                        'message' => 'No record found'
+                                    );
+                                    return Response::json($returnData, 404);
+                                }
+                            }
+                        
+                        case "REGISTERED":{
+                            
+                            /*
+                             * Tratamiento para una transacción aún en
+                             * proceso.
+                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                             $returnData = array (
+                                'status' => 400,
+                                'token' => $request->get('token'),
+                                'message' => "operacion Cancelada"
+                            );
+                            return Response::json($returnData, 400);
+                            break;
+                        }
+                        
+                        case "VERIFYING":{
+                            
+                            /*
+                             * La transacción ha sido procesada en Pagadito, pero ha quedado en verificación.
+                             * En este punto el cobro xha quedado en validación administrativa.
+                             * Posteriormente, la transacción puede marcarse como válida o denegada;
+                             * por lo que se debe monitorear mediante esta función hasta que su estado cambie a COMPLETED o REVOKED.
+                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                            $returnData = array (
+                                 'status' => 200,
+                                 'token' => $request->get('token'),
+                                 'aprobacion' => $Pagadito->get_rs_reference(),
+                                 'fecha' => $Pagadito->get_rs_date_trans(),
+                                 'message' => 'Compra en Validacion'
+                             );
+                             return Response::json($returnData, 200);
+                            break;}
+                        
+                        case "REVOKED":{
+                            
+                            /*
+                             * La transacción en estado VERIFYING ha sido denegada por Pagadito.
+                             * En este punto el cobro ya ha sido cancelado.
+                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                             $returnData = array (
+                                'status' => 400,
+                                'token' => $request->get('token'),
+                                'message' => "Compra Denegada"
+                            );
+                            return Response::json($returnData, 400);
+                            break;}
+                        
+                        case "FAILED":
+                            /*
+                             * Tratamiento para una transacción fallida.
+                             */
+                            {
+                                $returnData = array (
+                                    'status' => 500,
+                                    'token' => $request->get('token'),
+                                    'message' => "Compra Denegada"
+                                );
+                                return Response::json($returnData, 500);
+                            }
+                        default:
+                            {
+                            /*
+                             * Por ser un ejemplo, se muestra un mensaje
+                             * de error fijo.
+                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                             $returnData = array (
+                                'status' => 500,
+                                'token' => $request->get('token'),
+                                'message' => "Compra Denegada"
+                            );
+                            return Response::json($returnData, 500);
+                            break;}
+                    }
+                } else {
+                    /*
+                     * En caso de fallar la petición, verificamos el error devuelto.
+                     * Debido a que la API nos puede devolver diversos mensajes de
+                     * respuesta, validamos el tipo de mensaje que nos devuelve.
+                     */
+                    switch($Pagadito->get_rs_code())
+                    {
+                        case "PG2001":
+                            /*Incomplete data*/
+                        case "PG3002":
+                            /*Error*/
+                        case "PG3003":
+                            /*Unregistered transaction*/
+                        default:
+                            /*
+                             * Por ser un ejemplo, se muestra un mensaje
+                             * de error fijo.
+                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                             $returnData = array (
+                                'status' => 500,
+                                'token' => $request->get('token'),
+                                'message' => "error de transaccion Denegada"
+                            );
+                            return Response::json($returnData, 500);
+                            break;
+                    }
+                }
+            } else {
+                /*
+                 * En caso de fallar la conexión, verificamos el error devuelto.
+                 * Debido a que la API nos puede devolver diversos mensajes de
+                 * respuesta, validamos el tipo de mensaje que nos devuelve.
+                 */
+                switch($Pagadito->get_rs_code())
+                {
+                    case "PG2001":
+                        /*Incomplete data*/
+                    case "PG3001":
+                        /*Problem connection*/
+                    case "PG3002":
+                        /*Error*/
+                    case "PG3003":
+                        /*Unregistered transaction*/
+                    case "PG3005":
+                        /*Disabled connection*/
+                    case "PG3006":
+                        /*Exceeded*/
+                    default:
+                        /*
+                         * Aqui se muestra el código y mensaje de la respuesta del WSPG
+                         */
+                        $returnData = array (
+                            'status' => 400,
+                            'token' => $request->get('token'),
+                            'message' => "Compra Denegada",
+                            'COD' => $Pagadito->get_rs_code(),
+                            'MSG' => $Pagadito->get_rs_message()
+                        );
+                        return Response::json($returnData, 400);
+                        
+                        break;
+                }
+            }
+        } else {
+            /*
+             * Aqui se muestra el mensaje de error al no haber recibido el token por medio de la URL.
+             */
+            $returnData = array (
+                'status' => 400,
+                'token' => $request->get('token'),
+                'message' => "no se recibieron los datos",
+            );
+            return Response::json($returnData, 400);
+        }
+    }
     /**
     * Display the specified resource.
     *
@@ -325,7 +688,23 @@ class EventosVentaController extends Controller
         $objectUpdate = EventosVenta::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->column = $request->get('column', $objectUpdate->column);
+                $objectUpdate->evento_descuento = $request->get('evento_descuento', $objectUpdate->evento_descuento);
+                $objectUpdate->evento_vendedor = $request->get('evento_vendedor', $objectUpdate->evento_vendedor);
+                $objectUpdate->evento_funcion_area_lugar = $request->get('evento_funcion_area_lugar', $objectUpdate->evento_funcion_area_lugar);
+                $objectUpdate->evento_funcion = $request->get('evento_funcion', $objectUpdate->evento_funcion);
+                $objectUpdate->evento = $request->get('evento', $objectUpdate->evento);
+                $objectUpdate->usuario = $request->get('usuario', $objectUpdate->usuario);
+                $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->type = $request->get('type', $objectUpdate->type);
+                $objectUpdate->longitud = $request->get('longitud', $objectUpdate->longitud);
+                $objectUpdate->latitud = $request->get('latitud', $objectUpdate->latitud);
+                $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
+                $objectUpdate->total = $request->get('total', $objectUpdate->total);
+                $objectUpdate->cantidad = $request->get('cantidad', $objectUpdate->cantidad);
+                $objectUpdate->precio = $request->get('precio', $objectUpdate->precio);
+                $objectUpdate->codigo = $request->get('codigo', $objectUpdate->codigo);
+                $objectUpdate->lugar = $request->get('lugar', $objectUpdate->lugar);
+                $objectUpdate->titulo = $request->get('titulo', $objectUpdate->titulo);
     
                 $objectUpdate->save();
                 return Response::json($objectUpdate, 200);

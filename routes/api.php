@@ -50,6 +50,7 @@ Route::post('users/password/reset', 'UsersController@recoveryPassword');
 Route::post('users/{id}/changepassword', "UsersController@changePassword");
 
 Route::post('pagar', 'EventosVentaController@pagar');
+Route::post('comprobante', 'EventosVentaController@comprobanteCompra');
 Route::post('login', 'AuthenticateController@login');
 Route::post('upload', 'AuthenticateController@uploadAvatar');
 
