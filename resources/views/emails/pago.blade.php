@@ -13,7 +13,7 @@
     * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
     */
     :root {
-      --blue: #0000ff;
+      --blue: #5d1064;
       --indigo: #6610f2;
       --purple: #6f42c1;
       --pink: #e83e8c;
@@ -26,7 +26,7 @@
       --white: #fff;
       --gray: #6c757d;
       --gray-dark: #343a40;
-      --primary: #0000ff;
+      --primary: #5d1064;
       --secondary: #6c757d;
       --success: #8bd92a;
       --info: #17a2b8;
@@ -169,7 +169,7 @@
     }
 
     a {
-      color: #0000ff;
+      color: #5d1064;
       text-decoration: none;
       background-color: transparent;
       -webkit-text-decoration-skip: objects;
@@ -2369,8 +2369,8 @@
 
     .btn-primary {
       color: #fff;
-      background-color: #0000ff;
-      border-color: #0000ff;
+      background-color: #5d1064;
+      border-color: #5d1064;
     }
 
     .btn-primary:hover {
@@ -2385,8 +2385,8 @@
 
     .btn-primary.disabled, .btn-primary:disabled {
       color: #fff;
-      background-color: #0000ff;
-      border-color: #0000ff;
+      background-color: #5d1064;
+      border-color: #5d1064;
     }
 
     .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
@@ -2640,16 +2640,16 @@
     }
 
     .btn-outline-primary {
-      color: #0000ff;
+      color: #5d1064;
       background-color: transparent;
       background-image: none;
-      border-color: #0000ff;
+      border-color: #5d1064;
     }
 
     .btn-outline-primary:hover {
       color: #fff;
-      background-color: #0000ff;
-      border-color: #0000ff;
+      background-color: #5d1064;
+      border-color: #5d1064;
     }
 
     .btn-outline-primary:focus, .btn-outline-primary.focus {
@@ -2657,15 +2657,15 @@
     }
 
     .btn-outline-primary.disabled, .btn-outline-primary:disabled {
-      color: #0000ff;
+      color: #5d1064;
       background-color: transparent;
     }
 
     .btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active,
     .show > .btn-outline-primary.dropdown-toggle {
       color: #fff;
-      background-color: #0000ff;
-      border-color: #0000ff;
+      background-color: #5d1064;
+      border-color: #5d1064;
     }
 
     .btn-outline-primary:not(:disabled):not(.disabled):active:focus, .btn-outline-primary:not(:disabled):not(.disabled).active:focus,
@@ -2913,7 +2913,7 @@
 
     .btn-link {
       font-weight: 400;
-      color: #0000ff;
+      color: #5d1064;
       background-color: transparent;
     }
 
@@ -3171,7 +3171,7 @@
     .dropdown-item.active, .dropdown-item:active {
       color: #fff;
       text-decoration: none;
-      background-color: #0000ff;
+      background-color: #5d1064;
     }
 
     .dropdown-item.disabled, .dropdown-item:disabled {
@@ -3501,7 +3501,7 @@
 
     .custom-control-input:checked ~ .custom-control-label::before {
       color: #fff;
-      background-color: #0000ff;
+      background-color: #5d1064;
     }
 
     .custom-control-input:focus ~ .custom-control-label::before {
@@ -3560,7 +3560,7 @@
     }
 
     .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
-      background-color: #0000ff;
+      background-color: #5d1064;
     }
 
     .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
@@ -3568,7 +3568,7 @@
     }
 
     .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::before {
-      background-color: #0000ff;
+      background-color: #5d1064;
     }
 
     .custom-checkbox .custom-control-input:indeterminate ~ .custom-control-label::after {
@@ -3588,7 +3588,7 @@
     }
 
     .custom-radio .custom-control-input:checked ~ .custom-control-label::before {
-      background-color: #0000ff;
+      background-color: #5d1064;
     }
 
     .custom-radio .custom-control-input:checked ~ .custom-control-label::after {
@@ -3739,7 +3739,7 @@
       width: 1rem;
       height: 1rem;
       margin-top: -0.25rem;
-      background-color: #0000ff;
+      background-color: #5d1064;
       border: 0;
       border-radius: 1rem;
       -webkit-appearance: none;
@@ -3768,7 +3768,7 @@
     .custom-range::-moz-range-thumb {
       width: 1rem;
       height: 1rem;
-      background-color: #0000ff;
+      background-color: #5d1064;
       border: 0;
       border-radius: 1rem;
       -moz-appearance: none;
@@ -3797,7 +3797,7 @@
     .custom-range::-ms-thumb {
       width: 1rem;
       height: 1rem;
-      background-color: #0000ff;
+      background-color: #5d1064;
       border: 0;
       border-radius: 1rem;
       appearance: none;
@@ -3857,7 +3857,7 @@
     }
 
     .nav-tabs {
-      border-bottom: 1px solid #0000ff;
+      border-bottom: 1px solid #5d1064;
     }
 
     .nav-tabs .nav-item {
@@ -3871,7 +3871,7 @@
     }
 
     .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
-      border-color: #0000ff #0000ff #0000ff;
+      border-color: #5d1064 #5d1064 #5d1064;
     }
 
     .nav-tabs .nav-link.disabled {
@@ -3884,7 +3884,7 @@
     .nav-tabs .nav-item.show .nav-link {
       color: #495057;
       background-color: #fff;
-      border-color: #0000ff #0000ff #fff;
+      border-color: #5d1064 #5d1064 #fff;
     }
 
     .nav-tabs .dropdown-menu {
@@ -3900,7 +3900,7 @@
     .nav-pills .nav-link.active,
     .nav-pills .show > .nav-link {
       color: #fff;
-      background-color: #0000ff;
+      background-color: #5d1064;
     }
 
     .nav-fill .nav-item {
@@ -4647,7 +4647,7 @@
       padding: 0.5rem 0.75rem;
       margin-left: -1px;
       line-height: 1.25;
-      color: #0000ff;
+      color: #5d1064;
       background-color: #fff;
       border: 1px solid #dee2e6;
     }
@@ -4684,8 +4684,8 @@
     .page-item.active .page-link {
       z-index: 1;
       color: #fff;
-      background-color: #0000ff;
-      border-color: #0000ff;
+      background-color: #5d1064;
+      border-color: #5d1064;
     }
 
     .page-item.disabled .page-link {
@@ -4757,7 +4757,7 @@
 
     .badge-primary {
       color: #fff;
-      background-color: #0000ff;
+      background-color: #5d1064;
     }
 
     .badge-primary[href]:hover, .badge-primary[href]:focus {
@@ -5039,7 +5039,7 @@
       color: #fff;
       text-align: center;
       white-space: nowrap;
-      background-color: #0000ff;
+      background-color: #5d1064;
       transition: width 0.6s ease;
     }
 
@@ -5130,8 +5130,8 @@
     .list-group-item.active {
       z-index: 2;
       color: #fff;
-      background-color: #0000ff;
-      border-color: #0000ff;
+      background-color: #5d1064;
+      border-color: #5d1064;
     }
 
     .list-group-flush .list-group-item {
@@ -6027,7 +6027,7 @@
     }
 
     .bg-primary {
-      background-color: #0000ff !important;
+      background-color: #5d1064 !important;
     }
 
     a.bg-primary:hover, a.bg-primary:focus,
@@ -6155,7 +6155,7 @@
     }
 
     .border-primary {
-      border-color: #0000ff !important;
+      border-color: #5d1064 !important;
     }
 
     .border-secondary {
@@ -8808,7 +8808,7 @@
     }
 
     .text-primary {
-      color: #0000ff !important;
+      color: #5d1064 !important;
     }
 
     a.text-primary:hover, a.text-primary:focus {
@@ -8986,119 +8986,110 @@
   </style>
 </head>
 <body>
-
-  <div class="container mt-5">
-
-    <div class="row">
-      <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 offset-xs-2 offset-sm-2 offset-md-2 offset-lg-2 mb-auto">
-        <div class="row">
-          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <h1><a href=" ">
-             Come With Me </a></h1>
-          </div>
-          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
-            <h1>FACTURA</h1>
-            <h1><small>Factura {!! "#".$comprobante['ern'] !!}</small></h1>
-          </div>
+<div class="container pt-5">
+  <div class="row">
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 offset-xs-1 offset-sm-1 offset-md-1 offset-lg-1 mb-auto">
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <h3><a class="pointer text-primary"><img alt="" src="http://foxylabs.xyz/Documentos/imgs/TICKE3-8.png" height="50" width="150" /><br> Come With Me </a></h3>
         </div>
-        <div class="row">
-          <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4>De: <a href="#">Foxylabs</a></h4>
-              </div>
-            </div>
-          </div>
-          <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 offset-xs-2 offset-sm-2 offset-md-2 offset-lg-2 text-right">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4>Para : <a href="#">{!! $nombres !!} {!! $apellidos !!}</a></h4>
-              </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right text-dark">
+          <h1>FACTURA</h1>
+          <h1><small>Factura {!! "#".$comprobante['ern'] !!}</small></h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>De: <a href="#">Foxylabs</a></h4>
             </div>
           </div>
         </div>
-        <table class="table table-bordered">
-          <thead>
+        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 offset-xs-2 offset-sm-2 offset-md-2 offset-lg-2 text-right">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4>Para : <a href="#">{!! $nombres !!} {!! $apellidos !!}</a></h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table class="table table-bordered border-primary">
+        <thead class="text-dark">
+          <tr>
+            <th>
+              <h6>Asiento</h6>
+            </th>
+            <th>
+              <h6>Evento / Area</h6>
+            </th>
+            <th>
+              <h6>Fecha / Hora</h6>
+            </th>
+            <th>
+              <h6>Tarifa / Precio</h6>
+            </th>
+            <th>
+              <h6>Sub-Total</h6>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="text-secondary">
+          @foreach($SelectedData['lugares'] as $item)
             <tr>
-              <th>
-                <h6>Asiento</h6>
-              </th>
-
-              <th>
-                <h6>Evento / Area</h6>
-              </th>
-              <th>
-                <h6>Fecha / Hora</h6>
-              </th>
-              <th>
-                <h6>Tarifa / Precio</h6>
-              </th>
-              <th>
-                <h6>Sub-Total</h6>
-              </th>
+              <td>
+                <a class="text-primary pointer">
+                  {!! $item['titulo'] !!}
+                </a>
+              </td>
+              <td class=" text-right ">
+                  {{$item['eventos']?$item['eventos']['eventos']['descripcion']:''}} / {{$item['eventos']?$item['eventos']['descripcion']:''}}
+              </td>
+              <td class=" text-right ">
+                {!! $item['eventos']?$item['eventos']['eventos']['fecha_inicio']." / ".$item['eventos']['eventos']['hora_inicio']:'' !!}
+              </td>
+              <td class=" text-right ">
+                ${!! number_format($item['eventos']['precio'],2) !!}
+              </td>
+              <td class=" text-right ">
+                ${!! number_format($item['eventos']['precio'],2) !!}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-              @foreach($SelectedData['lugares'] as $item)
-              <tr>
-                <td>
-                  <a href="#">
-                    {!! $item['titulo'] !!}
-                  </a>
-                </td>
-                <td class=" text-right ">
-                    {{$item['eventos']?$item['eventos']['eventos']['descripcion']:''}} / {{$item['eventos']?$item['eventos']['descripcion']:''}}
-                </td>
-                <td class=" text-right ">
-                  {!! $item['eventos']?$item['eventos']['eventos']['inicio']:'' !!}
-                </td>
-                <td class=" text-right ">
-                  ${!! $item['eventos']['precio'] !!}.00
-                </td>
-                <td class=" text-right ">
-                  ${!! $item['eventos']['precio'] !!}.00
-                </td>
-              </tr>
-						@endforeach
-            
-          </tbody>
-        </table>
-        <div class="row text-right">
-          <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 offset-xs-7 offset-sm-7 offset-md-7 offset-lg-7">
-            <strong>
-            Sub Total:<br>
-            Impuestos (IVA 12%):<br>
-            Total:<br>
-            </strong>
-          </div>
-          <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-            <strong>
-                ${!! ($SelectedData['totalAll']-($SelectedData['totalAll']*0.12)) !!}.00<br>
-                ${!! ($SelectedData['totalAll']*0.12) !!}.00<br>
-                ${!! (($SelectedData['totalAll'])) !!}.00<br>
-            </strong>
-          </div>
+          @endforeach
+        </tbody>
+      </table>
+      <div class="row text-right">
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 offset-xs-7 offset-sm-7 offset-md-7 offset-lg-7 text-dark">
+          <strong>
+          Sub Total:<br>
+          Impuestos (IVA 12%):<br>
+          Total:<br>
+          </strong>
         </div>
-        <div class="row">
-          <div class = "col-xs-9 col-sm-9 col-md-9 col-lg-9">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Comprobante de Compra</h5>
-                  <p class="card-text">
-                      {!! $nombres !!} {!! $apellidos !!}<br>
-                      Token de Transaccion: {!! $comprobante['token'] !!}<br>
-                      Número de Autorizacion: {!! $comprobante['aprobacion'] !!}<br>
-                  </p>
-                </div>
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-primary">
+          <strong>
+              ${!! number_format($SelectedData['totalAll']-($SelectedData['totalAll']*0.12),2) !!}<br>
+              ${!! number_format($SelectedData['totalAll']*0.12,2) !!}<br>
+              ${!! number_format(($SelectedData['totalAll']),2) !!}<br>
+          </strong>
+        </div>
+      </div>
+      <div class="row">
+        <div class = "col-xs-9 col-sm-9 col-md-9 col-lg-9 text-secondary">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Comprobante de Compra</h5>
+                <p class="card-text">
+                    {!! $nombres !!} {!! $apellidos !!}<br>
+                    Token de Transaccion: {!! $comprobante['token'] !!}<br>
+                    Número de Autorizacion: {!! $comprobante['aprobacion'] !!}<br>
+                </p>
               </div>
-          </div>
-
+            </div>
         </div>
-
       </div>
     </div>
-
   </div>
-
+</div>
 </body>
 </html>
