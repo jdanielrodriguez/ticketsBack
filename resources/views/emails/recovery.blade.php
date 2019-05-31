@@ -8991,14 +8991,14 @@
       <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 offset-xs-3 offset-sm-3 offset-md-3 offset-lg-3 text-center pt-3">
           <form class="form-signin">
               <img class="mb-2" src="http://foxylabs.xyz/Documentos/imgs/TICKE3-8.png" alt="" width="150" height="50">
-              <h1 class="h3 mb-3 font-weight-normal text-left text-dark">Hola {!! $name !!}, tus nuevos Datos</h1>
-              <div class="input-group mb-1 alert alert-info text-center">
-                <h2 class="text-center">
+              <h1 class="h3 mb-3 font-weight-normal text-left text-dark">Hola {!! $name !!}, tus nuevos datos son:</h1>
+              <div class="input-group mb-1 alert alert-info text-center mx-auto">
+                <h2 class="text-center px-auto">
                   {!! $username !!}
                 </h2>
               </div>
-              <div class="input-group mb-3 alert alert-success text-center">
-                <h2 class="text-center">
+              <div class="input-group mb-3 alert alert-success text-center mx-auto">
+                <h2 class="text-center px-auto">
                   {!! $password !!}
                 </h2>
               </div>
