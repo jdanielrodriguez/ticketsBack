@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Mail\Message;
+use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -128,7 +130,10 @@ class EventosVentaController extends Controller
                 $newObject->evento_funcion_area_lugar            = $request->get('evento_funcion_area_lugar');
                 $newObject->evento_vendedor            = $request->get('evento_vendedor');
                 $newObject->evento_descuento            = $request->get('evento_descuento');
+                $newObject->token            = $request->get('token');
+                $newObject->ern            = $request->get('ern');
                 $newObject->save();
+                
                 return Response::json($newObject, 200);
     
             } catch (Exception $e) {
@@ -139,6 +144,16 @@ class EventosVentaController extends Controller
                 return Response::json($returnData, 500);
             }
         }
+    }
+    public function enviar(Request $request){
+
+        Mail::send('emails.pago', ["SelectedData"=>$request->get('SelectedData'),"comprobante"=>$request->get('comprobante'),"nombres"=>$request->get('nombres'),"apellidos"=>$request->get('apellidos')], function (Message $message) use ($request){
+            $message->from('info@foxylabs.gt', 'Info GTechnology')
+                    ->sender('info@foxylabs.gt', 'Info GTechnology')
+                    ->to($request->get('email'), $request->get('nombres').' '.$request->get('apellidos'))
+                    ->replyTo('info@foxylabs.gt', 'Info GTechnology')
+                    ->subject('Comprobante de Pago');
+        });
     }
     public function pagar(Request $request)
     {
@@ -395,19 +410,12 @@ class EventosVentaController extends Controller
                              $returnData11 = array (
                                 'status' => 200,
                                 'token' => $request->get('token'),
+                                'ern' => $request->get('ern'),
                                 'aprobacion' => $Pagadito->get_rs_reference(),
                                 'fecha' => $Pagadito->get_rs_date_trans(),
                                 'message' => 'Compra Exitosa'
                             );
                             return Response::json($returnData11, 200);
-                            Mail::send('emails.pago', ['empresa' => 'GTechnology', 'url' => 'http://gtechnology.gt', 'app' => 'http://me.gtechnology.gt', 'autorizacion' => $Pagadito->get_rs_reference(), 'fecha' => $Pagadito->get_rs_date_trans(), 'username' => $objectSee->username, 'email' => $objectSee->email, 'name' => $objectSee->firstname.' '.$objectSee->lastname,], function (Message $message) use ($objectSee){
-                                $message->from('info@foxylabs.gt', 'Info GTechnology')
-                                        ->sender('info@foxylabs.gt', 'Info GTechnology')
-                                        ->to($objectSee->email, $objectSee->firstname.' '.$objectSee->lastname)
-                                        ->replyTo('info@foxylabs.gt', 'Info GTechnology')
-                                        ->subject('Comprobante de Pago');
-                            });
-                            
                         }
                         
                         case "REGISTERED":{

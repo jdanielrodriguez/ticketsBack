@@ -80,7 +80,7 @@ class UsersController extends Controller
                      $newObject->rol = $request->get('rol');
                      $newObject->nacimiento = $request->get('nacimiento');
                      $newObject->descripcion = $request->get('descripcion', '');
-                     $newObject->state = $request->get('state',21);
+                     $newObject->state = $request->get('state',1);
                      $newObject->save();
                      $objectSee = Users::whereRaw('id=?',$newObject->id)->with('roles')->first();
                      if ($objectSee) {

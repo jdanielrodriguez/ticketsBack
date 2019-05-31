@@ -49,6 +49,7 @@ Route::get('rol/{id}/users', "Users@getUsersByRol");
 Route::post('users/password/reset', 'UsersController@recoveryPassword');
 Route::post('users/{id}/changepassword', "UsersController@changePassword");
 
+Route::post('enviar', 'EventosVentaController@enviar');
 Route::post('pagar', 'EventosVentaController@pagar');
 Route::post('comprobante', 'EventosVentaController@comprobanteCompra');
 Route::post('login', 'AuthenticateController@login');
