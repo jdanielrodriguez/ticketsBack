@@ -28,7 +28,11 @@ class EventosVendedorController extends Controller
                     break;
                 }
                 case 'evento_funcion':{
-                    $objectSee = EventosVendedor::whereRaw('usuario_admin=? and evento_funcion=?',[$id,$state])->with('usuarios','administrador','eventos')->get();
+                    $objectSee = EventosVendedor::whereRaw('evento_funcion=?',[$state])->with('usuarios','administrador','eventos')->get();
+                    break;
+                }
+                case 'usuario_admin':{
+                    $objectSee = EventosVendedor::whereRaw('usuario_admin=?',[$id])->with('usuarios','administrador','eventos')->get();
                     break;
                 }
                 default:{

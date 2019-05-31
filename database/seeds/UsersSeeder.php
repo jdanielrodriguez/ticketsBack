@@ -98,6 +98,21 @@ class UsersSeeder extends Seeder
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
 
+        DB::table('users')->insert([
+            "id"                => 3,
+            'username'          =>  "godoy-alejandro",
+            'password'          => bcrypt('foxylabs'),
+            'email'             => "godoy-alejandro@hotmail.com",
+            'nombres'         => "Alejandro",
+            'apellidos'          => "Godoy",
+            'descripcion'       => "Vendedor del sistema",
+            'nacimiento'          => "1999-01-01",
+            'state'             => 1,
+            'rol'             => 2,
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
+
 
     }
 }

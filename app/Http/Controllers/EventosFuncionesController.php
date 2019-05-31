@@ -24,53 +24,53 @@ class EventosFuncionesController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'evento':{
-                    $objectSee = EventosFunciones::whereRaw('evento=?',[$state])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('evento=?',[$state])->with('eventos','vendedores')->get();
                     break;
                 }
                 case 'proximos':{
-                    $objectSee = EventosFunciones::whereRaw('fecha_inicio>?',[$id])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('fecha_inicio>?',[$id])->with('eventos','vendedores')->get();
                     break;
                 }
                 case 'buscar':{
-                    $objectSee = EventosFunciones::whereRaw('fecha_inicio=? and titulo=?',[$state,$id])->with('eventos')->first();
+                    $objectSee = EventosFunciones::whereRaw('fecha_inicio=? and titulo=?',[$state,$id])->with('eventos','vendedores')->first();
                     break;
                 }
                 case 'proximos-principales':{
-                    $objectSee = EventosFunciones::whereRaw('fecha_inicio>? and type=2',[$id])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('fecha_inicio>? and type=2',[$id])->with('eventos','vendedores')->get();
                     break;
                 }
                 case 'actuales':{
-                    $objectSee = EventosFunciones::whereRaw('inicio<? and fin>?',[$id])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('inicio<? and fin>?',[$id])->with('eventos','vendedores')->get();
                     break;
                 }
                 case 'pasados':{
-                    $objectSee = EventosFunciones::whereRaw('fecha_fin<?',[$id,$state])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('fecha_fin<?',[$id,$state])->with('eventos','vendedores')->get();
                     break;
                 }
                 case 'proximos_eventos':{
-                    $objectSee = EventosFunciones::whereRaw('inicio>? and evento=?',[$state,$id])->with('eventos','areas')->get();
+                    $objectSee = EventosFunciones::whereRaw('inicio>? and evento=?',[$state,$id])->with('eventos','areas','vendedores')->get();
                     break;
                 }
                 case 'actuales_eventos':{
-                    $objectSee = EventosFunciones::whereRaw('fin>? and evento=?',[$state,$id])->with('eventos','areas')->get();
+                    $objectSee = EventosFunciones::whereRaw('fin>? and evento=?',[$state,$id])->with('eventos','areas','vendedores')->get();
                     break;
                 }
                 case 'pasados_eventos':{
-                    $objectSee = EventosFunciones::whereRaw('fin<? and evento=?',[$state,$id])->with('eventos','areas')->get();
+                    $objectSee = EventosFunciones::whereRaw('fin<? and evento=?',[$state,$id])->with('eventos','areas','vendedores')->get();
                     break;
                 }
                 case 'evento':{
-                    $objectSee = EventosFunciones::whereRaw('evento=?',[$id])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('evento=?',[$id])->with('eventos','vendedores')->get();
                     break;
                 }
                 default:{
-                    $objectSee = EventosFunciones::whereRaw('evento=? and state=?',[$id,$state])->with('eventos')->get();
+                    $objectSee = EventosFunciones::whereRaw('evento=? and state=?',[$id,$state])->with('eventos','vendedores')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = EventosFunciones::whereRaw('evento=?',[$id])->with('eventos')->get();
+            $objectSee = EventosFunciones::whereRaw('evento=?',[$id])->with('eventos','vendedores')->get();
         }
     
         if ($objectSee) {
@@ -158,7 +158,9 @@ class EventosFuncionesController extends Controller
     {
         $objectSee = EventosFunciones::find($id);
         if ($objectSee) {
-            $objectSee->column;
+            $objectSee->eventos;
+            $objectSee->vendedores;
+            $objectSee->areas;
             return Response::json($objectSee, 200);
     
         }

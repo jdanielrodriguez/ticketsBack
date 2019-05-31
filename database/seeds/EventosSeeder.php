@@ -42,6 +42,24 @@ class EventosSeeder extends Seeder
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
 
+
+
+
+
+        DB::table('eventos_vendedor')->insert([
+            'titulo'          =>  "godoy-alejandro@hotmail.com",
+            'porcentaje'          => 15,
+            'cantidad'             => null,
+            'descripcion'         => "Descuento de alejandro",
+            'type'          => 1,
+            'state'       => 1,
+            'usuario'          => 3,
+            'usuario_admin'             => 2,
+            'evento_funcion'             => 1,
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
+
         DB::table('eventos_funciones_area')->insert([
             'titulo'       => 'Taller',
             'descripcion'       => 'Taller sin Jurgen Klaric',
