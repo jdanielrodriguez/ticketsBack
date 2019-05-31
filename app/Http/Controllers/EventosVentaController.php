@@ -286,6 +286,15 @@ class EventosVentaController extends Controller
                                 return Response::json($returnData, 400);
                                 break;
                         }
+                        case "PG3009":
+                            {
+                                $returnData = array (
+                                    'status' => 400,
+                                    'message' => 'La cantidad del precio es incorrecta'
+                                );
+                                return Response::json($returnData, 400);
+                                break;
+                        }
                             /*Disabled connection*/
                         default:
                             $returnData = array (

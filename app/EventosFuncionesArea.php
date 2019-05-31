@@ -13,7 +13,7 @@ class EventosFuncionesArea extends Model
     }
 
     public function eventos(){
-        return $this->hasOne('App\EventosFunciones','id','evento_funcion')->with('eventos');
+        return $this->hasOne('App\EventosFunciones','id','evento_funcion')->with('eventos','vendedores');
     }
 
     public function lugares(){

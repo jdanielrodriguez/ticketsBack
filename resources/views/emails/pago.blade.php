@@ -9063,6 +9063,9 @@
           <strong>
           Sub Total:<br>
           Impuestos (IVA 12%):<br>
+          @if ($SelectedData['descuento']>0)
+          <span >Descuento:<br></span>
+          @endif
           Total:<br>
           </strong>
         </div>
@@ -9070,7 +9073,10 @@
           <strong>
               ${!! number_format($SelectedData['totalAll']-($SelectedData['totalAll']*0.12),2) !!}<br>
               ${!! number_format($SelectedData['totalAll']*0.12,2) !!}<br>
-              ${!! number_format(($SelectedData['totalAll']),2) !!}<br>
+              @if ($SelectedData['descuento']>0)
+              <span class="text-danger">- ${!! number_format($SelectedData['descuento'],2) !!}<br></span >
+              @endif
+              ${!! number_format(($SelectedData['totalAll']-$SelectedData['descuento']),2) !!}<br>
           </strong>
         </div>
       </div>
