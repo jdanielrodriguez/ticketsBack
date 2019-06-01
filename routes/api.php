@@ -49,6 +49,9 @@ Route::get('rol/{id}/users', "Users@getUsersByRol");
 Route::post('users/password/reset', 'UsersController@recoveryPassword');
 Route::post('users/{id}/changepassword', "UsersController@changePassword");
 
+Route::put('vender/{id}', 'EventosFuncionesAreaController@Vender');
+
+
 Route::post('enviar', 'EventosVentaController@enviar');
 Route::post('pagar', 'EventosVentaController@pagar');
 Route::post('comprobante', 'EventosVentaController@comprobanteCompra');

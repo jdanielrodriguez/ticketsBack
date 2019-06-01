@@ -112,30 +112,38 @@ class EventosVentaController extends Controller
         }
         else {
             try {
-                $newObject = new EventosVenta();
-                $newObject->titulo            = $request->get('titulo');
-                $newObject->lugar            = $request->get('lugar');
-                $newObject->codigo            = $request->get('codigo');
-                $newObject->precio            = $request->get('precio');
-                $newObject->cantidad            = $request->get('cantidad');
-                $newObject->total            = $request->get('total');
-                $newObject->descripcion            = $request->get('descripcion');
-                $newObject->latitud            = $request->get('latitud');
-                $newObject->longitud            = $request->get('longitud');
-                $newObject->type            = $request->get('type');
-                $newObject->state            = $request->get('state');
-                $newObject->usuario            = $request->get('usuario');
-                $newObject->evento            = $request->get('evento');
-                $newObject->evento_funcion            = $request->get('evento_funcion');
-                $newObject->evento_funcion_area_lugar            = $request->get('evento_funcion_area_lugar');
-                $newObject->evento_vendedor            = $request->get('evento_vendedor');
-                $newObject->evento_descuento            = $request->get('evento_descuento');
-                $newObject->token            = $request->get('token');
-                $newObject->ern            = $request->get('ern');
-                $newObject->save();
-                
-                return Response::json($newObject, 200);
-    
+                $objectSee = EventosVenta::whereRaw('usuario=? and evento_funcion_area_lugar=?',[$request->get('usuario'),$request->get('evento_funcion_area_lugar')])->with('usuarios','eventos','area','vendedores','descuentos')->first();
+                if($objectSee){
+                    return Response::json($objectSee, 200);
+                }else{
+                    $newObject = new EventosVenta();
+                    $newObject->titulo            = $request->get('titulo');
+                    $newObject->lugar            = $request->get('lugar');
+                    $newObject->codigo            = $request->get('codigo');
+                    $newObject->precio            = $request->get('precio');
+                    $newObject->cantidad            = $request->get('cantidad');
+                    $newObject->total            = $request->get('total');
+                    $newObject->descripcion            = $request->get('descripcion');
+                    $newObject->latitud            = $request->get('latitud');
+                    $newObject->longitud            = $request->get('longitud');
+                    $newObject->type            = $request->get('type');
+                    $newObject->state            = $request->get('state');
+                    $newObject->usuario            = $request->get('usuario');
+                    $newObject->evento            = $request->get('evento');
+                    $newObject->evento_funcion            = $request->get('evento_funcion');
+                    $newObject->evento_funcion_area_lugar            = $request->get('evento_funcion_area_lugar');
+                    $newObject->evento_vendedor            = $request->get('evento_vendedor');
+                    $newObject->evento_descuento            = $request->get('evento_descuento');
+                    $newObject->token            = $request->get('token');
+                    $newObject->ern            = $request->get('ern');
+                    $newObject->save();
+                    $newObject->usuarios;
+                    $newObject->eventos;
+                    $newObject->area;
+                    $newObject->vendedores;
+                    $newObject->descuentos;
+                    return Response::json($newObject, 200);
+                }
             } catch (Exception $e) {
                 $returnData = array (
                     'status' => 500,

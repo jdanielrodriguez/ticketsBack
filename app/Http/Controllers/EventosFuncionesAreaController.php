@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use App\EventosFuncionesAreaLugar;
 use App\EventosFuncionesArea;
 use Response;
 use Validator;
@@ -153,6 +154,39 @@ class EventosFuncionesAreaController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
+    public function Vender(Request $request, $id)
+    {
+        $objectUpdate = EventosFuncionesArea::find($id);
+        if ($objectUpdate) {
+            try {
+                $objectUpdate->vendidos =  $objectUpdate->vendidos+1;
+                foreach ($request->get('lugares') as $value) {
+                    $objectUpdateLugar = EventosFuncionesAreaLugar::find($value['id']);
+                    if($objectUpdateLugar){
+                        $objectUpdateLugar->vendido = 1;
+                        $objectUpdateLugar->save();
+                    }
+                }
+                $objectUpdate->save();
+                $objectUpdate->eventos;
+                $objectUpdate->lugares;
+                return Response::json($objectUpdate, 200);
+            } catch (Exception $e) {
+                $returnData = array (
+                    'status' => 500,
+                    'message' => $e->getMessage()
+                );
+                return Response::json($returnData, 500);
+            }
+        }
+        else {
+            $returnData = array (
+                'status' => 404,
+                'message' => 'No record found'
+            );
+            return Response::json($returnData, 404);
+        }
+    }
     public function update(Request $request, $id)
     {
         $objectUpdate = EventosFuncionesArea::find($id);
