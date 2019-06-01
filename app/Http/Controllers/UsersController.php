@@ -79,6 +79,7 @@ class UsersController extends Controller
                      $newObject->apellidos = $request->get('apellidos');
                      $newObject->rol = $request->get('rol');
                      $newObject->nacimiento = $request->get('nacimiento');
+                     $newObject->codigo = $request->get('codigo');
                      $newObject->descripcion = $request->get('descripcion', '');
                      $newObject->state = $request->get('state',1);
                      $newObject->save();
@@ -164,6 +165,7 @@ class UsersController extends Controller
                 $objectUpdate->nacimiento = $request->get('nacimiento', $objectUpdate->nacimiento);
                 $objectUpdate->state = $request->get('state', $objectUpdate->state);
                 $objectUpdate->rol = $request->get('rol', $objectUpdate->rol);
+                $objectUpdate->codigo = $request->get('codigo', $objectUpdate->codigo);
                 $objectUpdate->save();
                 $objectUpdate->roles;
 
