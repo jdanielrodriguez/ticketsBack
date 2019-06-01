@@ -9009,7 +9009,7 @@
         <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 offset-xs-2 offset-sm-2 offset-md-2 offset-lg-2 text-right">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h4>Para : <a href="#">{!! $nombres !!} {!! $apellidos !!}</a></h4>
+              <h4>Para : <a href="#">{!! $nombres?$nombres:$username !!} {!! $apellidos?$apellidos:'' !!}</a></h4>
             </div>
           </div>
         </div>
