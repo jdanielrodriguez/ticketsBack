@@ -186,7 +186,7 @@ class EventosVentaController extends Controller
              * parámetro la URL de Conexión definida en la constante WSPG
              */
 
-            if($request->get('prueba')){
+            if($request->get('SANDBOX')){
                 define("UID", "00a44a36adaab6310e6bf306b9d5969b");
                 define("WSK", "c6ef3680408284ca1addc87b64c48421");
                 define("SANDBOX", true);
@@ -348,7 +348,7 @@ class EventosVentaController extends Controller
                     default:
                         $returnData = array (
                             'status' => 400,
-                            'message' => 'No ha podido funcionar 2'
+                            'message' => 'No ha podido funcionar 2'.$Pagadito->get_rs_code()
                         );
                         return Response::json($returnData, 400);
                         break;
@@ -378,7 +378,7 @@ class EventosVentaController extends Controller
                      * Lo primero es crear el objeto Pagadito, al que se le pasa como
                      * parámetros el UID y el WSK definidos en config.php
                      */
-                    if($request->get('prueba')){
+                    if($request->get('SANDBOX')){
                         define("UID", "00a44a36adaab6310e6bf306b9d5969b");
                         define("WSK", "c6ef3680408284ca1addc87b64c48421");
                         define("SANDBOX", true);
