@@ -186,13 +186,15 @@ class EventosVentaController extends Controller
              * parámetro la URL de Conexión definida en la constante WSPG
              */
 
-            // define("UID", "00a44a36adaab6310e6bf306b9d5969b");
-            // define("WSK", "c6ef3680408284ca1addc87b64c48421");
-            // define("SANDBOX", true);
-            
+            if($request->get('prueba')){
                 define("UID", "00a44a36adaab6310e6bf306b9d5969b");
                 define("WSK", "c6ef3680408284ca1addc87b64c48421");
                 define("SANDBOX", true);
+            }else{
+                define("UID", "050a50ed89944a938c66f35fb546ccbd");
+                define("WSK", "d2efe418eb2907f70aeeaccd411088c9");
+                define("SANDBOX", false);
+            }
             
             $Pagadito = new Pagadito(UID, WSK);
             /*
@@ -376,10 +378,16 @@ class EventosVentaController extends Controller
                      * Lo primero es crear el objeto Pagadito, al que se le pasa como
                      * parámetros el UID y el WSK definidos en config.php
                      */
-                    
+                    if($request->get('prueba')){
                         define("UID", "00a44a36adaab6310e6bf306b9d5969b");
                         define("WSK", "c6ef3680408284ca1addc87b64c48421");
                         define("SANDBOX", true);
+                    }else{
+                        define("UID", "050a50ed89944a938c66f35fb546ccbd");
+                        define("WSK", "d2efe418eb2907f70aeeaccd411088c9");
+                        define("SANDBOX", false);
+                    }
+                        
                     $Pagadito = new Pagadito(UID, WSK);
                     /*
                      * Si se está realizando pruebas, necesita conectarse con Pagadito SandBox. Para ello llamamos
