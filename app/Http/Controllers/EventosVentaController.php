@@ -123,6 +123,8 @@ class EventosVentaController extends Controller
                     $newObject->precio            = $request->get('precio');
                     $newObject->cantidad            = $request->get('cantidad');
                     $newObject->total            = $request->get('total');
+                    $newObject->fechaAprobacion            = $request->get('fechaAprobacion');
+                    $newObject->fechaAprobacionS            = $request->get('fechaAprobacionS');
                     $newObject->descripcion            = $request->get('descripcion');
                     $newObject->latitud            = $request->get('latitud');
                     $newObject->longitud            = $request->get('longitud');
@@ -136,6 +138,7 @@ class EventosVentaController extends Controller
                     $newObject->evento_descuento            = $request->get('evento_descuento');
                     $newObject->token            = $request->get('token');
                     $newObject->ern            = $request->get('ern');
+                    $newObject->aprobacion            = $request->get('aprobacion');
                     $newObject->save();
                     $newObject->usuarios;
                     $newObject->eventos;
@@ -366,223 +369,220 @@ class EventosVentaController extends Controller
             );
             return Response::json($returnData, 400);
         }else{
-
-        }
-        if ($request->get('token')) {
-            /*
-             * Lo primero es crear el objeto Pagadito, al que se le pasa como
-             * parámetros el UID y el WSK definidos en config.php
-             */
-            if($request->get("applicacion")){
-                switch ($request->get("applicacion")) {
-                    case '49':{
-                        define("UID", "f000d4c73c37258c9e32d0ad1f26ef05");
-                        define("WSK", "0aa5e92f54d6c0ceb0f058715abbd8c7");
-                        define("SANDBOX", false);
-                        break;
-                    }
+            $objectSee = EventosVenta::whereRaw('token=? and ern=?',[$request->get('token'),$request->get('ern')])->with('usuarios','eventos','area','vendedores','descuentos')->first();
+            if(!$objectSee){
+                if ($request->get('token')) {
+                    /*
+                     * Lo primero es crear el objeto Pagadito, al que se le pasa como
+                     * parámetros el UID y el WSK definidos en config.php
+                     */
                     
-                    default:{
                         define("UID", "00a44a36adaab6310e6bf306b9d5969b");
                         define("WSK", "c6ef3680408284ca1addc87b64c48421");
                         define("SANDBOX", true);
-                        break;
-                    }
-                }
-            }else{
-                define("UID", "00a44a36adaab6310e6bf306b9d5969b");
-                define("WSK", "c6ef3680408284ca1addc87b64c48421");
-                define("SANDBOX", true);
-            }
-            $Pagadito = new Pagadito(UID, WSK);
-            /*
-             * Si se está realizando pruebas, necesita conectarse con Pagadito SandBox. Para ello llamamos
-             * a la función mode_sandbox_on(). De lo contrario omitir la siguiente linea.
-             */
-            if (SANDBOX) {
-                $Pagadito->mode_sandbox_on();
-            }
-            /*
-             * Validamos la conexión llamando a la función connect(). Retorna
-             * true si la conexión es exitosa. De lo contrario retorna false
-             */
-            if ($Pagadito->connect()) {
-                /*
-                 * Solicitamos el estado de la transacción llamando a la función
-                 * get_status(). Le pasamos como parámetro el token recibido vía
-                 * GET en nuestra URL de retorno.
-                 */
-                if ($Pagadito->get_status($request->get('token'))) {
-
+                    $Pagadito = new Pagadito(UID, WSK);
                     /*
-                     * Luego validamos el estado de la transacción, consultando el
-                     * estado devuelto por la API.
+                     * Si se está realizando pruebas, necesita conectarse con Pagadito SandBox. Para ello llamamos
+                     * a la función mode_sandbox_on(). De lo contrario omitir la siguiente linea.
                      */
-                    switch($Pagadito->get_rs_status())
-                    {
-                        case "COMPLETED":{
+                    if (SANDBOX) {
+                        $Pagadito->mode_sandbox_on();
+                    }
+                    /*
+                     * Validamos la conexión llamando a la función connect(). Retorna
+                     * true si la conexión es exitosa. De lo contrario retorna false
+                     */
+                    if ($Pagadito->connect()) {
+                        /*
+                         * Solicitamos el estado de la transacción llamando a la función
+                         * get_status(). Le pasamos como parámetro el token recibido vía
+                         * GET en nuestra URL de retorno.
+                         */
+                        if ($Pagadito->get_status($request->get('token'))) {
+        
                             /*
-                             * Tratamiento para una transacción exitosa.
-                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
-                             $returnData11 = array (
-                                'status' => 200,
-                                'token' => $request->get('token'),
-                                'ern' => $request->get('ern'),
-                                'aprobacion' => $Pagadito->get_rs_reference(),
-                                'fecha' => $Pagadito->get_rs_date_trans(),
-                                'message' => 'Compra Exitosa'
-                            );
-                            return Response::json($returnData11, 200);
-                        }
-                        
-                        case "REGISTERED":{
-                            
-                            /*
-                             * Tratamiento para una transacción aún en
-                             * proceso.
-                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
-                             $returnData = array (
-                                'status' => 400,
-                                'token' => $request->get('token'),
-                                'message' => "operacion Cancelada"
-                            );
-                            return Response::json($returnData, 400);
-                            break;
-                        }
-                        
-                        case "VERIFYING":{
-                            
-                            /*
-                             * La transacción ha sido procesada en Pagadito, pero ha quedado en verificación.
-                             * En este punto el cobro xha quedado en validación administrativa.
-                             * Posteriormente, la transacción puede marcarse como válida o denegada;
-                             * por lo que se debe monitorear mediante esta función hasta que su estado cambie a COMPLETED o REVOKED.
-                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
-                            $returnData = array (
-                                 'status' => 200,
-                                 'token' => $request->get('token'),
-                                 'aprobacion' => $Pagadito->get_rs_reference(),
-                                 'fecha' => $Pagadito->get_rs_date_trans(),
-                                 'message' => 'Compra en Validacion'
-                             );
-                             return Response::json($returnData, 200);
-                            break;}
-                        
-                        case "REVOKED":{
-                            
-                            /*
-                             * La transacción en estado VERIFYING ha sido denegada por Pagadito.
-                             * En este punto el cobro ya ha sido cancelado.
-                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
-                             $returnData = array (
-                                'status' => 400,
-                                'token' => $request->get('token'),
-                                'message' => "Compra Denegada"
-                            );
-                            return Response::json($returnData, 400);
-                            break;}
-                        
-                        case "FAILED":
-                            /*
-                             * Tratamiento para una transacción fallida.
+                             * Luego validamos el estado de la transacción, consultando el
+                             * estado devuelto por la API.
                              */
+                            switch($Pagadito->get_rs_status())
                             {
-                                $returnData = array (
-                                    'status' => 500,
-                                    'token' => $request->get('token'),
-                                    'message' => "Compra Denegada"
-                                );
-                                return Response::json($returnData, 500);
+                                case "COMPLETED":{
+                                    /*
+                                     * Tratamiento para una transacción exitosa.
+                                     */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                                     $returnData11 = array (
+                                        'status' => 200,
+                                        'token' => $request->get('token'),
+                                        'ern' => $request->get('ern'),
+                                        'aprobacion' => $Pagadito->get_rs_reference(),
+                                        'fecha' => $Pagadito->get_rs_date_trans(),
+                                        'message' => 'Compra Exitosa'
+                                    );
+                                    return Response::json($returnData11, 200);
+                                }
+                                
+                                case "REGISTERED":{
+                                    
+                                    /*
+                                     * Tratamiento para una transacción aún en
+                                     * proceso.
+                                     */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                                     $returnData = array (
+                                        'status' => 400,
+                                        'token' => $request->get('token'),
+                                        'message' => "operacion Cancelada"
+                                    );
+                                    return Response::json($returnData, 400);
+                                    break;
+                                }
+                                
+                                case "VERIFYING":{
+                                    
+                                    /*
+                                     * La transacción ha sido procesada en Pagadito, pero ha quedado en verificación.
+                                     * En este punto el cobro xha quedado en validación administrativa.
+                                     * Posteriormente, la transacción puede marcarse como válida o denegada;
+                                     * por lo que se debe monitorear mediante esta función hasta que su estado cambie a COMPLETED o REVOKED.
+                                     */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                                    $returnData = array (
+                                         'status' => 200,
+                                         'token' => $request->get('token'),
+                                         'aprobacion' => $Pagadito->get_rs_reference(),
+                                         'fecha' => $Pagadito->get_rs_date_trans(),
+                                         'message' => 'Compra en Validacion'
+                                     );
+                                     return Response::json($returnData, 200);
+                                    break;}
+                                
+                                case "REVOKED":{
+                                    
+                                    /*
+                                     * La transacción en estado VERIFYING ha sido denegada por Pagadito.
+                                     * En este punto el cobro ya ha sido cancelado.
+                                     */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                                     $returnData = array (
+                                        'status' => 400,
+                                        'token' => $request->get('token'),
+                                        'message' => "Compra Denegada"
+                                    );
+                                    return Response::json($returnData, 400);
+                                    break;}
+                                
+                                case "FAILED":
+                                    /*
+                                     * Tratamiento para una transacción fallida.
+                                     */
+                                    {
+                                        $returnData = array (
+                                            'status' => 500,
+                                            'token' => $request->get('token'),
+                                            'message' => "Compra Denegada"
+                                        );
+                                        return Response::json($returnData, 500);
+                                    }
+                                default:
+                                    {
+                                    /*
+                                     * Por ser un ejemplo, se muestra un mensaje
+                                     * de error fijo.
+                                     */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                                     $returnData = array (
+                                        'status' => 500,
+                                        'token' => $request->get('token'),
+                                        'message' => "Compra Denegada"
+                                    );
+                                    return Response::json($returnData, 500);
+                                    break;}
                             }
-                        default:
-                            {
+                        } else {
                             /*
-                             * Por ser un ejemplo, se muestra un mensaje
-                             * de error fijo.
-                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
-                             $returnData = array (
-                                'status' => 500,
-                                'token' => $request->get('token'),
-                                'message' => "Compra Denegada"
-                            );
-                            return Response::json($returnData, 500);
-                            break;}
+                             * En caso de fallar la petición, verificamos el error devuelto.
+                             * Debido a que la API nos puede devolver diversos mensajes de
+                             * respuesta, validamos el tipo de mensaje que nos devuelve.
+                             */
+                            switch($Pagadito->get_rs_code())
+                            {
+                                case "PG2001":
+                                    /*Incomplete data*/
+                                case "PG3002":
+                                    /*Error*/
+                                case "PG3003":
+                                    /*Unregistered transaction*/
+                                default:
+                                    /*
+                                     * Por ser un ejemplo, se muestra un mensaje
+                                     * de error fijo.
+                                     */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+                                     $returnData = array (
+                                        'status' => 500,
+                                        'token' => $request->get('token'),
+                                        'message' => "error de transaccion Denegada"
+                                    );
+                                    return Response::json($returnData, 500);
+                                    break;
+                            }
+                        }
+                    } else {
+                        /*
+                         * En caso de fallar la conexión, verificamos el error devuelto.
+                         * Debido a que la API nos puede devolver diversos mensajes de
+                         * respuesta, validamos el tipo de mensaje que nos devuelve.
+                         */
+                        switch($Pagadito->get_rs_code())
+                        {
+                            case "PG2001":
+                                /*Incomplete data*/
+                            case "PG3001":
+                                /*Problem connection*/
+                            case "PG3002":
+                                /*Error*/
+                            case "PG3003":
+                                /*Unregistered transaction*/
+                            case "PG3005":
+                                /*Disabled connection*/
+                            case "PG3006":
+                                /*Exceeded*/
+                            default:
+                                /*
+                                 * Aqui se muestra el código y mensaje de la respuesta del WSPG
+                                 */
+                                $returnData = array (
+                                    'status' => 400,
+                                    'token' => $request->get('token'),
+                                    'message' => "Compra Denegada",
+                                    'COD' => $Pagadito->get_rs_code(),
+                                    'MSG' => $Pagadito->get_rs_message()
+                                );
+                                return Response::json($returnData, 400);
+                                
+                                break;
+                        }
                     }
                 } else {
                     /*
-                     * En caso de fallar la petición, verificamos el error devuelto.
-                     * Debido a que la API nos puede devolver diversos mensajes de
-                     * respuesta, validamos el tipo de mensaje que nos devuelve.
+                     * Aqui se muestra el mensaje de error al no haber recibido el token por medio de la URL.
                      */
-                    switch($Pagadito->get_rs_code())
-                    {
-                        case "PG2001":
-                            /*Incomplete data*/
-                        case "PG3002":
-                            /*Error*/
-                        case "PG3003":
-                            /*Unregistered transaction*/
-                        default:
-                            /*
-                             * Por ser un ejemplo, se muestra un mensaje
-                             * de error fijo.
-                             */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
-                             $returnData = array (
-                                'status' => 500,
-                                'token' => $request->get('token'),
-                                'message' => "error de transaccion Denegada"
-                            );
-                            return Response::json($returnData, 500);
-                            break;
-                    }
+                    $returnData = array (
+                        'status' => 400,
+                        'token' => $request->get('token'),
+                        'message' => "no se recibieron los datos",
+                    );
+                    return Response::json($returnData, 400);
                 }
-            } else {
-                /*
-                 * En caso de fallar la conexión, verificamos el error devuelto.
-                 * Debido a que la API nos puede devolver diversos mensajes de
-                 * respuesta, validamos el tipo de mensaje que nos devuelve.
-                 */
-                switch($Pagadito->get_rs_code())
-                {
-                    case "PG2001":
-                        /*Incomplete data*/
-                    case "PG3001":
-                        /*Problem connection*/
-                    case "PG3002":
-                        /*Error*/
-                    case "PG3003":
-                        /*Unregistered transaction*/
-                    case "PG3005":
-                        /*Disabled connection*/
-                    case "PG3006":
-                        /*Exceeded*/
-                    default:
-                        /*
-                         * Aqui se muestra el código y mensaje de la respuesta del WSPG
-                         */
-                        $returnData = array (
-                            'status' => 400,
-                            'token' => $request->get('token'),
-                            'message' => "Compra Denegada",
-                            'COD' => $Pagadito->get_rs_code(),
-                            'MSG' => $Pagadito->get_rs_message()
-                        );
-                        return Response::json($returnData, 400);
-                        
-                        break;
-                }
+            }else{
+                $returnData11 = array (
+                    'status' => 203,
+                    'token' => $objectSee->token,
+                    'ern' => $objectSee->ern,
+                    'aprobacion' => $objectSee->aprobacion,
+                    'fecha' => $objectSee->fechaAprobacion,
+                    'message' => 'Compra Exitosa'
+                );
+                return Response::json($returnData11, 200);
             }
-        } else {
-            /*
-             * Aqui se muestra el mensaje de error al no haber recibido el token por medio de la URL.
-             */
-            $returnData = array (
-                'status' => 400,
-                'token' => $request->get('token'),
-                'message' => "no se recibieron los datos",
-            );
-            return Response::json($returnData, 400);
         }
+        
+        
     }
     /**
     * Display the specified resource.

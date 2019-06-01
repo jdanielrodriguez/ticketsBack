@@ -23,6 +23,9 @@ class CreateEventosVentaTable extends Migration
             $table->double('total')->nullable()->default(null);
             $table->string('token')->nullable()->default(null);
             $table->string('ern')->nullable()->default(null);
+            $table->timestamp('fechaAprobacion')->nullable()->default(null);
+            $table->string('fechaAprobacionS')->nullable()->default(null);
+            $table->string('aprobacion')->nullable()->default(null);
             $table->string('descripcion')->nullable()->default(null);
             $table->double('latitud',15,8)->nullable()->default(null);
             $table->double('longitud',15,8)->nullable()->default(null);
