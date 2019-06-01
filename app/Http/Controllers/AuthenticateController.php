@@ -27,11 +27,23 @@ class AuthenticateController extends Controller
         }
         else {
             try {
-
-                $userdata = array(
-                    'username'  => $request->get('username'),
-                    'password'  => $request->get('password')
-                );
+                $validator = Validator::make($request->all(), [
+                    'username'  => 'email',
+                ]);
+                $userdata = array();
+                if ( $validator->fails() ) {
+                    $userdata = array(
+                        'username'  => $request->get('username'),
+                        'password'  => $request->get('password')
+                    );
+                }else{
+                    // $field = (preg_match('/^[A-z0-9\\._-]+@[A-z0-9][A-z0-9-]*(\\.[A-z0-9_-]+)*\\.([A-z]{2,6})$/', $request->get('username'), null)) ? 'email' : 'username';
+                    $userdata = array(
+                        'email'  => $request->get('username'),
+                        'password'  => $request->get('password')
+                    );
+                }
+                
 
                 if(Auth::attempt($userdata, true)) {
                     $user = Users::find(Auth::user()->id);

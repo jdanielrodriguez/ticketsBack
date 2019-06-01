@@ -9088,10 +9088,18 @@
                 <p class="card-text">
                     {!! $nombres !!} {!! $apellidos !!}<br>
                     Token de Transaccion: {!! $comprobante['token'] !!}<br>
-                    Número de Autorizacion: {!! $comprobante['aprobacion'] !!}<br>
+                    Número de Autorizacion: <img class="barcode" class="mt-3 ml-3" width="50%" alt="{!! $comprobante['aprobacion'] !!}" src="http://foxylabs.xyz/Documentos/barcode.php?text={!! $comprobante['aprobacion'] !!}&amp;codetype=code128&amp;orientation=horizontal&amp;size=20&amp;print=true">  <br>
                 </p>
               </div>
             </div>
+        </div>
+        <div class = "col-xs-3 col-sm-3 col-md-3 col-lg-3 text-danger">
+          <div class="alert alert-warning my-auto">
+            <i class="fa fa-warning"></i>
+            <strong>Manten este documento contigo</strong> para poder ingresar a tu Evento!
+        </div>
+        
+         
         </div>
       </div>
     </div>
