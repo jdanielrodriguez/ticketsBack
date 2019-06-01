@@ -192,7 +192,7 @@ class EventosVentaController extends Controller
                 define("SANDBOX", true);
             }else{
                 define("UID", "050a50ed89944a938c66f35fb546ccbd");
-                define("WSK", "d2efe418eb2907f70aeeaccd411088c9");
+                define("WSK", "ba64cdb7f7e023817ce16ae4b617714d");
                 define("SANDBOX", false);
             }
             
@@ -384,7 +384,7 @@ class EventosVentaController extends Controller
                         define("SANDBOX", true);
                     }else{
                         define("UID", "050a50ed89944a938c66f35fb546ccbd");
-                        define("WSK", "d2efe418eb2907f70aeeaccd411088c9");
+                        define("WSK", "ba64cdb7f7e023817ce16ae4b617714d");
                         define("SANDBOX", false);
                     }
                         
