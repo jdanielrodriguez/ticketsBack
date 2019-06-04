@@ -101,7 +101,7 @@ class EventosSeeder extends Seeder
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
-        for ($i=0; $i < 50; $i++) { 
+        for ($i=0; $i < 100; $i++) { 
             DB::table('eventos_funciones_area_lugar')->insert([
                 'titulo'       => 'Silla',
                 'descripcion'       => null,
@@ -131,7 +131,7 @@ class EventosSeeder extends Seeder
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
-        for ($i=0; $i < 25; $i++) { 
+        for ($i=0; $i < 30; $i++) { 
             DB::table('eventos_funciones_area_lugar')->insert([
                 'titulo'       => 'Silla',
                 'descripcion'       => null,
@@ -161,7 +161,7 @@ class EventosSeeder extends Seeder
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
-        for ($i=0; $i < 15; $i++) { 
+        for ($i=0; $i < 20; $i++) { 
             DB::table('eventos_funciones_area_lugar')->insert([
                 'titulo'       => 'Silla',
                 'descripcion'       => null,
