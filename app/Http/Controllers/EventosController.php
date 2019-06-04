@@ -28,7 +28,7 @@ class EventosController extends Controller
                     break;
                 }
                 case 'usuario':{
-                    $objectSee = Eventos::whereRaw('usuario=?',[$state])->with('usuarios','categorias','tipos')->get();
+                    $objectSee = Eventos::whereRaw('usuario=?',[$state])->with('usuarios','categorias','tipos','funciones')->get();
                     break;
                 }
                 case 'categoria':{

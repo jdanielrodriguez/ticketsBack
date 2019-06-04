@@ -23,4 +23,8 @@ class Eventos extends Model
     public function imagenes(){
         return $this->hasMany('App\EventosImgs','evento','id');
     }
+
+    public function funciones(){
+        return $this->hasMany('App\EventosFunciones','evento','id')->orderby('inicio','desc');
+    }
 }

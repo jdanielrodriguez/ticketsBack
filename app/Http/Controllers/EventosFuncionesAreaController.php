@@ -159,8 +159,8 @@ class EventosFuncionesAreaController extends Controller
         $objectUpdate = EventosFuncionesArea::find($id);
         if ($objectUpdate) {
             try {
-                $objectUpdate->vendidos =  $objectUpdate->vendidos+1;
                 foreach ($request->get('lugares') as $value) {
+                    $objectUpdate->vendidos =  $objectUpdate->vendidos+1;
                     $objectUpdateLugar = EventosFuncionesAreaLugar::find($value['id']);
                     if($objectUpdateLugar){
                         $objectUpdateLugar->vendido = 1;
