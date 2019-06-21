@@ -33,6 +33,10 @@ class EventosVentaController extends Controller
                     $objectSee = EventosVenta::whereRaw('evento=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
                     break;
                 }
+                case 'token':{
+                    $objectSee = EventosVenta::whereRaw('token=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    break;
+                }
                 case 'usuario_evento':{
                     $objectSee = EventosVenta::whereRaw('usuario=? and evento=?',[$id,$state])->with('usuarios','eventos','area','vendedores','descuentos')->get();
                     break;
