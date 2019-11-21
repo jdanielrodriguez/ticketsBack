@@ -617,7 +617,66 @@ class EventosVentaController extends Controller
             return Response::json($returnData, 404);
         }
     }
+
+    public function pago2co(Request $request){
+        Twocheckout::privateKey('4CF44FAD-1D38-4A37-B1DD-DFBEAB018BD3'); //Private Key
+        Twocheckout::sellerId('901416066'); // 2Checkout Account Number
+        Twocheckout::sandbox(true); // Set to false for production accounts.
+
+        $validator = Validator::make($request->all(), [
+            'price'          => 'required',
+            'token'          => 'required',
+        ]);
+        if ( $validator->fails() ) {
+            $returnData = array (
+                'status' => 400,
+                'message' => 'Invalid Parameters',
+                'validator' => $validator
+            );
+            return Response::json($returnData, 400);
+        }
+        else {
+            try {
+                $charge = Twocheckout_Charge::auth(array(
+                    "merchantOrderId" => "1234",
+                    "token"      => $request->get('token'),
+                    "currency"   => $request->get('city','USD'),
+                    "total"      => $request->get('price')*($request->get('quantity')?$request->get('quantity'):1),
+                    "billingAddr" => array(
+                        "name" => $request->get('name','Testing Tester'),
+                        "addrLine1" => $request->get('addrLine1','123 Test St'),
+                        "city" => $request->get('city','Columbus'),
+                        "state" => $request->get('state','OH'),
+                        "zipCode" => $request->get('zipCode','43123'),
+                        "country" => $request->get('country','USA'),
+                        "email" => $request->get('email','example@2co.com'),
+                        "phoneNumber" => $request->get('phoneNumber','555-555-5555')
+                    )
+                ));
     
+                if ($charge['response']['responseCode'] == 'APPROVED') {
+                    $returnData = array (
+                        'status' => 200,
+                        'result' => $charge
+                    );
+                    return Response::json($returnData, 200);
+    
+                }else{
+                    $returnData = array (
+                        'status' => 400,
+                        'result' => $charge
+                    );
+                    return Response::json($returnData, 400);
+                }
+            } catch (Twocheckout_Error $e) {
+                $returnData = array (
+                    'status' => 500,
+                    'message' => $e->getMessage()
+                );
+                return Response::json($returnData, 500);
+            }
+        }
+    }
     /**
     * Show the form for editing the specified resource.
     *

@@ -52,6 +52,7 @@ Route::post('users/{id}/changepassword', "UsersController@changePassword");
 Route::put('vender/{id}', 'EventosFuncionesAreaController@Vender');
 
 
+Route::post('pago', 'EventosVentaController@pago2co');
 Route::post('enviar', 'EventosVentaController@enviar');
 Route::post('pagar', 'EventosVentaController@pagar');
 Route::post('comprobante', 'EventosVentaController@comprobanteCompra');
