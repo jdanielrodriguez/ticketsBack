@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\EventosVenta;
+use App\Users;
 use Response;
 use Validator;
 class EventosVentaController extends Controller
@@ -637,36 +638,46 @@ class EventosVentaController extends Controller
         }
         else {
             try {
-                $charge = Twocheckout_Charge::auth(array(
-                    "merchantOrderId" => "1234",
-                    "token"      => $request->get('token'),
-                    "currency"   => $request->get('city','USD'),
-                    "total"      => $request->get('price')*($request->get('quantity')?$request->get('quantity'):1),
-                    "billingAddr" => array(
-                        "name" => $request->get('name','Testing Tester'),
-                        "addrLine1" => $request->get('addrLine1','123 Test St'),
-                        "city" => $request->get('city','Columbus'),
-                        "state" => $request->get('state','OH'),
-                        "zipCode" => $request->get('zipCode','43123'),
-                        "country" => $request->get('country','USA'),
-                        "email" => $request->get('email','example@2co.com'),
-                        "phoneNumber" => $request->get('phoneNumber','555-555-5555')
-                    )
-                ));
-    
-                if ($charge['response']['responseCode'] == 'APPROVED') {
+                $objectUsuario = Users::find($request->get('usuario'));
+                if ($objectUsuario) {
+                    $charge = Twocheckout_Charge::auth(array(
+                        "merchantOrderId" => "250221572951",
+                        "token"      => $request->get('token'),
+                        "currency"   => $request->get('currency','USD'),
+                        "total"      => $request->get('price')*($request->get('quantity')?$request->get('quantity'):1),
+                        "billingAddr" => array(
+                            "name" => $objectUsuario->nombres?$objectUsuario->nombres." ".$objectUsuario->apellidos:$request->get('name','Testing Tester'),
+                            "addrLine1" => $request->get('addrLine1','Ciudad'),
+                            "city" => $request->get('city','Guatemala'),
+                            "state" => $request->get('state','GT'),
+                            "zipCode" => $request->get('zipCode','10001'),
+                            "country" => $request->get('country','GT'),
+                            "email" => $objectUsuario->email?$objectUsuario->email:$request->get('email','example@2co.com'),
+                            "phoneNumber" => $request->get('phoneNumber','0000-0000')
+                        )
+                    ));
+        
+                    if ($charge['response']['responseCode'] == 'APPROVED') {
+                        $returnData = array (
+                            'status' => 200,
+                            'result' => $charge
+                        );
+                        return Response::json($returnData, 200);
+        
+                    }else{
+                        $returnData = array (
+                            'status' => 400,
+                            'result' => $charge
+                        );
+                        return Response::json($returnData, 400);
+                    }
+                }
+                else {
                     $returnData = array (
-                        'status' => 200,
-                        'result' => $charge
+                        'status' => 404,
+                        'message' => 'No record found'
                     );
-                    return Response::json($returnData, 200);
-    
-                }else{
-                    $returnData = array (
-                        'status' => 400,
-                        'result' => $charge
-                    );
-                    return Response::json($returnData, 400);
+                    return Response::json($returnData, 404);
                 }
             } catch (Twocheckout_Error $e) {
                 $returnData = array (

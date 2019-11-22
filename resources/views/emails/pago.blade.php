@@ -9088,7 +9088,7 @@
                 <p class="card-text">
                     {!! $nombres !!} {!! $apellidos !!}<br>
                     Token de Transaccion: {!! $comprobante['token'] !!}<br>
-                    Número de Autorizacion: <img class="barcode" class="mt-3 ml-3" width="50%" alt="{!! $comprobante['aprobacion'] !!}" src="http://foxylabs.xyz/Documentos/barcode.php?text={!! $comprobante['aprobacion'] !!}&amp;codetype=code128&amp;orientation=horizontal&amp;size=20&amp;print=true">  <br>
+                    Número de Orden: <img class="barcode" class="mt-3 ml-3" width="50%" alt="{!! $comprobante['aprobacion'] !!}" src="http://foxylabs.xyz/Documentos/barcode.php?text={!! $comprobante['aprobacion'] !!}&amp;codetype=code128&amp;orientation=horizontal&amp;size=20&amp;print=true">  <br>
                 </p>
               </div>
             </div>
