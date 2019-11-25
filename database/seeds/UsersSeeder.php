@@ -21,7 +21,7 @@ class UsersSeeder extends Seeder
         ]);
         DB::table('roles')->insert([
             'titulo'       => 'Usuario',
-            'descripcion'       => 'Usuario Comun del sistema',
+            'descripcion'       => 'Creador de Eventos',
             'state'       => 1,
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
@@ -29,7 +29,7 @@ class UsersSeeder extends Seeder
 
         DB::table('roles')->insert([
             'titulo'       => 'Cliente',
-            'descripcion'       => 'Cliente de entradas en el sistema',
+            'descripcion'       => 'Comprador de Entradas',
             'state'       => 1,
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
