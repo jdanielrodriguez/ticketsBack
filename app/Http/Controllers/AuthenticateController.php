@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Users;
 use Response;
 use Validator;
+use Storage;
 use Auth;
 
 class AuthenticateController extends Controller
@@ -87,16 +88,21 @@ class AuthenticateController extends Controller
         }
         else {
             try {
-    
                 $path = Storage::disk('s3')->put($request->carpeta, $request->avatar);
-                return Response::json(Storage::disk('s3')->url($path), 200);
-    
+                $returnData = array(
+                    'status' => 200,
+                    'message' => 'Picture Upload Success',
+                    'picture' => Storage::disk('s3')->url($path)
+                );
+                return Response::json($returnData, 200);
             }
             catch (Exception $e) {
                 $returnData = array(
                     'status' => 500,
-                    'message' => $e->getMessage()
+                    'message' => 'Invalid Parameters',
+                    'error' => $e
                 );
+                return Response::json($returnData, 500);
             }
     
         }

@@ -164,6 +164,7 @@ class UsersController extends Controller
                 $objectUpdate->descripcion = $request->get('descripcion', $objectUpdate->descripcion);
                 $objectUpdate->nacimiento = $request->get('nacimiento', $objectUpdate->nacimiento);
                 $objectUpdate->state = $request->get('state', $objectUpdate->state);
+                $objectUpdate->foto = $request->get('foto', $objectUpdate->foto);
                 $objectUpdate->rol = $request->get('rol', $objectUpdate->rol);
                 $objectUpdate->codigo = $request->get('codigo', $objectUpdate->codigo);
                 $objectUpdate->save();
