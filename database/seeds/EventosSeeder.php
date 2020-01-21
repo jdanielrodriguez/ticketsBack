@@ -21,17 +21,7 @@ class EventosSeeder extends Seeder
             'created_at'        => date('Y-m-d H:m:s'),
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
-
-        DB::table('eventos_imgs')->insert([
-            'titulo'       => 'Conferencia con Jurgen',
-            'descripcion'       => 'Conferencia',
-            'type'       => 1,
-            'state'       => 1,
-            'evento'       => 1,
-            'url'       => "https://i.ytimg.com/vi/EO2h32CA10E/maxresdefault.jpg",
-            'created_at'        => date('Y-m-d H:m:s'),
-            'updated_at'        => date('Y-m-d H:m:s')
-        ]);
+        
 
         DB::table('eventos_funciones')->insert([
             'titulo'       => 'Conferencia con Jurgen',
@@ -53,8 +43,16 @@ class EventosSeeder extends Seeder
             'updated_at'        => date('Y-m-d H:m:s')
         ]);
 
-
-
+        DB::table('eventos_imgs')->insert([
+            'titulo'       => 'Conferencia con Jurgen',
+            'descripcion'       => 'Conferencia',
+            'type'       => 1,
+            'state'       => 1,
+            'evento'       => 1,
+            'url'       => "https://i.ytimg.com/vi/EO2h32CA10E/maxresdefault.jpg",
+            'created_at'        => date('Y-m-d H:m:s'),
+            'updated_at'        => date('Y-m-d H:m:s')
+        ]);
 
 
         DB::table('eventos_vendedor')->insert([

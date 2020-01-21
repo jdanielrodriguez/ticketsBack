@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use App\EventosFuncionesArea;
 use App\EventosFuncionesAreaLugar;
 use Response;
+use DB;
 use Validator;
 class EventosFuncionesAreaLugarController extends Controller
 {
@@ -90,24 +92,37 @@ class EventosFuncionesAreaLugarController extends Controller
         }
         else {
             try {
-                $newObject = new EventosFuncionesAreaLugar();
-                $newObject->titulo            = $request->get('titulo');
-                $newObject->descripcion            = $request->get('descripcion');
-                $newObject->lugar            = $request->get('lugar');
-                $newObject->numero            = $request->get('numero');
-                $newObject->butaca            = $request->get('butaca');
-                $newObject->vendido            = $request->get('vendido');
-                $newObject->type            = $request->get('type');
-                $newObject->state            = $request->get('state');
-                $newObject->evento_funcion_area            = $request->get('evento_funcion_area');
-                $newObject->save();
-                return Response::json($newObject, 200);
+                DB::beginTransaction();
+                $returnData = Array();
+                if($cantidadLugares = $request->get('catidadLugares')){
+                    for ($i=0; $i < $cantidadLugares; $i++) { 
+                        $newObject = new EventosFuncionesAreaLugar();
+                        $newObject->titulo            = $request->get('titulo');
+                        $newObject->descripcion            = $request->get('descripcion');
+                        $newObject->lugar            = $request->get('butaca')+$i;
+                        $newObject->numero            = $request->get('butaca')+$i;
+                        $newObject->butaca            = $request->get('butaca')+$i;
+                        $newObject->vendido            = $request->get('vendido',0);
+                        $newObject->type            = $request->get('type');
+                        $newObject->state            = $request->get('state');
+                        $newObject->evento_funcion_area            = $request->get('evento_funcion_area');
+                        $newObject->save();
+                        array_push($returnData,$newObject);
+                    }
+                    $objectSee = EventosFuncionesArea::find($request->get('evento_funcion_area'));
+                    $objectSee->total = $objectSee->total + $cantidadLugares;
+                    $objectSee->save();
+                    DB::commit();
+                }
+                
+                return Response::json($returnData, 200);
     
             } catch (Exception $e) {
                 $returnData = array (
                     'status' => 500,
                     'message' => $e->getMessage()
                 );
+                DB::rollback();
                 return Response::json($returnData, 500);
             }
         }

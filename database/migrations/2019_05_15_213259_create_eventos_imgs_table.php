@@ -22,7 +22,7 @@ class CreateEventosImgsTable extends Migration
             $table->integer('state')->nullable()->default(1);
 
             $table->integer('evento')->nullable()->default(null)->unsigned();
-            $table->foreign('evento')->references('id')->on('eventos')->onDelete('cascade');
+            $table->foreign('evento')->references('id')->on('eventos_funciones')->onDelete('cascade');
 
             $table->timestamps();
         });

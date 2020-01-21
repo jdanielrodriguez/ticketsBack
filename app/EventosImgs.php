@@ -9,6 +9,6 @@ class EventosImgs extends Model
     protected $table = 'eventos_imgs';
 
     public function eventos(){
-        return $this->hasOne('App\Eventos','id','evento');
+        return $this->hasOne('App\EventosFunciones','id','evento');
     }
 }
