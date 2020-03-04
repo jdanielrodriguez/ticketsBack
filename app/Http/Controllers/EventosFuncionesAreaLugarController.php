@@ -201,7 +201,50 @@ class EventosFuncionesAreaLugarController extends Controller
             return Response::json($returnData, 404);
         }
     }
-    
+
+    public function deleteLugares(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $returnData = Array();
+            $actual =$request->get('aEliminar');
+            $cantidadLugares = count($actual);
+            if($cantidadLugares>0){
+                foreach ($actual as $value) {
+                    if(isset($value['id'])) {
+                        $objectDelete = EventosFuncionesAreaLugar::find($value['id']);
+                        if ($objectDelete) {
+                            try {
+                                EventosFuncionesAreaLugar::destroy($value['id']);
+                                array_push($returnData,$objectDelete);
+                            } catch (Exception $e) {
+                                $returnData = array (
+                                    'status' => 500,
+                                    'message' => $e->getMessage()
+                                );
+                                return Response::json($returnData, 500);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            $objectSee = EventosFuncionesArea::find($request->get('evento_funcion_area'));
+            $objectSee->total = $objectSee->total + $cantidadLugares;
+            $objectSee->save();
+            DB::commit();
+            return Response::json($returnData, 200);
+
+        } catch (Exception $e) {
+            $returnData = array (
+                'status' => 500,
+                'message' => $e->getMessage()
+            );
+            DB::rollback();
+            return Response::json($returnData, 500);
+        }
+        
+    }
     
     /**
     * Remove the specified resource from storage.

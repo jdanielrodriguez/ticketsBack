@@ -58,6 +58,7 @@ Route::post('pagar', 'EventosVentaController@pagar');
 Route::post('comprobante', 'EventosVentaController@comprobanteCompra');
 Route::post('login', 'AuthenticateController@login');
 Route::post('upload', 'AuthenticateController@uploadAvatar');
+Route::post('eventosfuncionesarealugar/delete', 'EventosFuncionesAreaLugarController@deleteLugares');
 
 Route::get('/user', function (Request $request) {
     return $request->user();

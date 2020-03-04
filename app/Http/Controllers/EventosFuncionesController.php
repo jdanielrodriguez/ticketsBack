@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\EventosFunciones;
+use App\EventosFuncionesArea;
 use Response;
 use Validator;
 class EventosFuncionesController extends Controller
@@ -221,8 +222,25 @@ class EventosFuncionesController extends Controller
                 $objectUpdate->type = $request->get('type', $objectUpdate->type);
                 $objectUpdate->state = $request->get('state', $objectUpdate->state);
                 $objectUpdate->evento = $request->get('evento', $objectUpdate->evento);
-    
                 $objectUpdate->save();
+                if($request->get('areas')){
+                   foreach ($request->get('areas') as $value) {
+                       if(!isset($value['id'])){
+                        $newObject = new EventosFuncionesArea();
+                        $newObject->titulo            = $value['titulo'];
+                        $newObject->descripcion            = $value['descripcion'];
+                        $newObject->precio            = $value['precio'];
+                        $newObject->total            = $value['total'];
+                        $newObject->vendidos            = $value['vendidos'];
+                        $newObject->type            = $value['type'];
+                        $newObject->state            = $value['state'];
+                        $newObject->tipo            = $value['tipo'];
+                        $newObject->evento_funcion            = $value['evento_funcion'];
+                        $newObject->save();
+                       }
+                    } 
+                }
+                
                 return Response::json($objectUpdate, 200);
             } catch (Exception $e) {
                 $returnData = array (
