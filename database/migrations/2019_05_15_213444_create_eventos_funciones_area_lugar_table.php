@@ -19,6 +19,9 @@ class CreateEventosFuncionesAreaLugarTable extends Migration
             $table->string('descripcion')->nullable()->default(null);
             $table->string('lugar')->nullable()->default(null);
             $table->double('numero')->nullable()->default(null);
+            $table->double('precio',5,2)->nullable()->default(null);
+            $table->double('ubicacion_x',5,5)->nullable()->default(null);
+            $table->double('ubicacion_y',5,5)->nullable()->default(null);
             $table->string('butaca')->nullable()->default(null);
             $table->integer('vendido')->nullable()->default(0);
             $table->integer('type')->nullable()->default(1);
