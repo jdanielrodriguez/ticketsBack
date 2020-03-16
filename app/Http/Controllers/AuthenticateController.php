@@ -17,12 +17,14 @@ class AuthenticateController extends Controller
             $objectSee = Users::whereRaw('email=? and google_id=?',[$request->get('email'),$request->get('google_id')])->with('comprados','myReferidos')->first();
             if ($objectSee) {
                 if($objectSee->google_token==$request->get('google_token')){
+                    $objectSee->google_idToken=$request->get('google_idToken');
                     $objectSee->foto=$request->get('imagen');
                     $objectSee->save();
                     return Response::json($objectSee, 200);
                 }else{
                     $objectSee->google_token=$request->get('google_token');
                     $objectSee->google_idToken=$request->get('google_idToken');
+                    $objectSee->google_id=$request->get('google_id');
                     $objectSee->foto=$request->get('imagen');
                     $objectSee->save();
                     return Response::json($objectSee, 200);
