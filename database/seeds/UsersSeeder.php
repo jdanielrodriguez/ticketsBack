@@ -72,7 +72,7 @@ class UsersSeeder extends Seeder
             "id"                => 1,
             'username'          =>  "admin",
             'password'          => bcrypt('1234'),
-            'email'             => "jdanielr61@gmail.com",
+            'email'             => "aypmazate@gmail.com",
             'nombres'         => "Admin",
             'apellidos'          => "Sys",
             'descripcion'       => "",

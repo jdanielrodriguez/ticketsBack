@@ -13,7 +13,7 @@ use Auth;
 class AuthenticateController extends Controller
 {
     public function login(Request $request) {
-        if($request->get('google')=="google"){
+        if($request->get('google')=="google" || $request->get('google')=="facebook"){
             $objectSee = Users::whereRaw('email=? and google_id=?',[$request->get('email'),$request->get('google_id')])->with('comprados','myReferidos')->first();
             if ($objectSee) {
                 if($objectSee->google_token==$request->get('google_token')){
