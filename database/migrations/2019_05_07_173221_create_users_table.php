@@ -12,7 +12,7 @@ class CreateUsersTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {   Schema::defaultStringLength(300);
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('username')->nullable()->default(null);
@@ -25,8 +25,11 @@ class CreateUsersTable extends Migration
             $table->date('nacimiento')->nullable()->default(null);
             $table->string('foto')->nullable()->default(null);
             $table->dateTime('last_conection')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->string('facebook_id')->nullable()->default(null);
-            $table->string('one_signal_id')->nullable()->default(null);
+            $table->text('facebook_id')->nullable()->default(null);
+            $table->text('one_signal_id')->nullable()->default(null);
+            $table->text('google_id')->nullable()->default(null);
+            $table->text('google_token')->nullable()->default(null);
+            $table->text('google_idToken')->nullable()->default(null);
             $table->string('pic1')->nullable()->default(null);
             $table->string('pic2')->nullable()->default(null);
             $table->string('pic3')->nullable()->default(null);

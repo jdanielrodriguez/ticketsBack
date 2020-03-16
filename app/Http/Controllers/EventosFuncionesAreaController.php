@@ -203,7 +203,7 @@ class EventosFuncionesAreaController extends Controller
                 $objectUpdate->evento_funcion = $request->get('evento_funcion', $objectUpdate->evento_funcion);
     
                 $objectUpdate->save();
-                return Response::json($objectUpdate, 200);
+                return Response::json($objectUpdate, 201);
             } catch (Exception $e) {
                 $returnData = array (
                     'status' => 500,

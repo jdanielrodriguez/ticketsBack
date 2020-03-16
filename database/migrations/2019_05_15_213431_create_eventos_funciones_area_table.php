@@ -17,12 +17,12 @@ class CreateEventosFuncionesAreaTable extends Migration
             $table->increments('id');
             $table->string('titulo')->nullable()->default(null);
             $table->string('descripcion')->nullable()->default(null);
-            $table->double('tasa_cambio',5,5)->nullable()->default(null);
-            $table->double('iva',5,2)->nullable()->default(null);
-            $table->double('tasa_iva',5,2)->nullable()->default(null);
-            $table->double('comision',5,2)->nullable()->default(null);
-            $table->double('precio',5,2)->nullable()->default(null);
-            $table->double('total',5,2)->nullable()->default(null);
+            $table->double('tasa_cambio')->nullable()->default(null);
+            $table->double('iva')->nullable()->default(null);
+            $table->double('tasa_iva')->nullable()->default(null);
+            $table->double('comision')->nullable()->default(null);
+            $table->double('precio')->nullable()->default(null);
+            $table->double('total')->nullable()->default(null);
             $table->double('vendidos')->nullable()->default(null);
             $table->integer('type')->nullable()->default(1);
             $table->integer('state')->nullable()->default(1);

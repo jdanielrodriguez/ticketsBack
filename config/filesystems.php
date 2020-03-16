@@ -56,10 +56,10 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key' => 'AKIAJ4JRR4IYMVODSWGA',
-            'secret' => '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',
-            'region' => 'us-west-2',
-            'bucket' => 'bpresentacion',
+            'key' => 'AKIAIXL2VU4WJLMBTWBQ',
+            'secret' => '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',
+            'region' => 'us-east-1',
+            'bucket' => 'ticketeragt',
         ],
 
     ],

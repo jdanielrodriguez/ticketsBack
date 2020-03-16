@@ -77,8 +77,13 @@ class UsersController extends Controller
                      $newObject->email = $email;
                      $newObject->nombres = $request->get('nombres');
                      $newObject->apellidos = $request->get('apellidos');
+                     $newObject->foto = $request->get('imagen');
                      $newObject->rol = $request->get('rol');
                      $newObject->nacimiento = $request->get('nacimiento');
+                     $newObject->google_id = $request->get('google_id', null);
+                     $newObject->google_token = $request->get('google_token', null);
+                     $newObject->facebook_id = $request->get('facebook_id',null);
+                     $newObject->google_idToken = $request->get('google_idToken', null);
                      $newObject->codigo = $request->get('codigo');
                      $newObject->descripcion = $request->get('descripcion', '');
                      $newObject->state = $request->get('state',1);

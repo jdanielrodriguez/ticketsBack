@@ -21,6 +21,6 @@ class Eventos extends Model
     }
 
     public function funciones(){
-        return $this->hasMany('App\EventosFunciones','evento','id')->orderby('inicio','desc');
+        return $this->hasMany('App\EventosFunciones','evento','id')->with('imagenes')->orderby('inicio','desc');
     }
 }

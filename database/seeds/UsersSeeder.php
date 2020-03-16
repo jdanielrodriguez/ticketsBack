@@ -85,9 +85,9 @@ class UsersSeeder extends Seeder
 
         DB::table('users')->insert([
             "id"                => 2,
-            'username'          =>  "jdrodriguezr61",
+            'username'          =>  "dannyjose1112",
             'password'          => bcrypt('foxylabs'),
-            'email'             => "jdrodriguezr61@gmail.com",
+            'email'             => "dannyjose1112@gmail.com",
             'nombres'         => "Daniel",
             'apellidos'          => "Rodriguez",
             'descripcion'       => "Vendedor del sistema",
