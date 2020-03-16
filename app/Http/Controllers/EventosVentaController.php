@@ -171,6 +171,104 @@ class EventosVentaController extends Controller
                     ->subject('Comprobante de Pago');
         });
     }
+
+    //Pago con qpaypro
+    public function pagarQPP(Request $request)
+    {
+        $base_api = "https://sandbox.qpaypro.com/payment/api_v1";
+
+        $testMode = true;
+        $sessionID = uniqid();
+        $orgID = $testMode ? '1snn5n9w' : 'k8vif92e';
+        if($request->id){
+            switch($request->id){
+                case '144':{
+                    $testMode = false;
+                    $base_api = "https://payments.qpaypro.com/payment/api_v1";
+                    $orgID = $testMode ? '1snn5n9w' : 'k8vif92e';
+                    $mechantID = '5Y6UcxDxkDl6LFPffowfnStz';
+                    $x_login = '5Y6UcxDxkDl6LFPffowfnStz';
+                    $x_private_key = 'zqKrXUupSePfeXvW2Rok03E5';
+                    $x_api_secret = 'wieOwJeETb5i0kNxPWSKOPYb';
+                    break;
+                }
+                default:{
+                    $x_login = 'visanetgt_qpay';
+                    $x_private_key = '88888888888';
+                    $x_api_secret = '99999999999';
+                    break;
+                }
+            }
+        }else{
+            $x_login = 'visanetgt_qpay';
+            $x_private_key = '88888888888';
+            $x_api_secret = '99999999999';
+        }
+        
+        
+
+        $x_fp_timestamp = time();
+        $x_relay_response = 'none';
+        $x_relay_url = 'none';
+        $x_type = 'AUTH_ONLY';
+        $x_method = 'CC';
+        $x_invoice_num = rand(1,999999);
+        $x_fp_sequence = 1988679099;
+        $x_audit_number = rand(1,999999);
+        
+        $array = array(
+        "x_login"=> $request->x_login, 
+        "x_private_key"=> $request->x_private_key,
+        "x_api_secret"=> $request->x_api_secret,
+        "x_product_id"=> $request->x_product_id,
+        "x_audit_number"=> $x_audit_number,
+        "x_fp_sequence"=> $x_fp_sequence,
+        "x_fp_timestamp"=> $x_fp_timestamp,
+        "x_invoice_num"=> $x_invoice_num,
+        "x_currency_code"=> $request->x_currency_code,
+        "x_amount"=> $request->x_amount,
+        "x_line_item"=> $request->x_line_item,
+        "x_freight"=> $request->x_freight,
+        "x_email"=> $request->x_email,
+        "cc_number"=> $request->cc_number,
+        "cc_exp"=> $request->cc_exp,
+        "cc_cvv2"=> $request->cc_cvv2,
+        "cc_name"=> $request->cc_name,
+        "x_first_name"=> $request->x_first_name,
+        "x_last_name"=> $request->x_last_name,
+        "x_company"=> $request->x_company,
+        "x_address"=> $request->x_address,
+        "x_city"=> $request->x_city,
+        "x_state"=> $request->x_state,
+        "x_country"=> $request->x_country,
+        "x_zip"=> $request->x_zip,
+        "x_relay_response"=> $x_relay_response,
+        "x_relay_url"=> $x_relay_url,
+        "x_type"=> $x_type,
+        "x_method"=> $x_method,
+        "http_origin"=> $request->http_origin,
+        "cc_type"=> $request->cc_type,
+        "visaencuotas"=> $request->visaencuotas,
+        "device_fingerprint_id"=> $sessionID
+        );
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $base_api);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $array);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        $resp = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        $json = json_decode($resp);
+
+        // var_dump($json);
+        return Response::json($json, 200);
+
+    }
+    //Pago con pagadito
     public function pagar(Request $request)
     {
         $validator = Validator::make($request->all(), [
