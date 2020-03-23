@@ -316,6 +316,76 @@ class EventosVentaController extends Controller
         return Response::json($json, 200);
 
     }
+    //Pago con qpaypro
+    public function pagalo(Request $request)
+    {
+        $base_api = "https://sandbox.pagalocard.com/api/v1/integracion/CpZX6HmypsaBRnLkY3Ws";
+        
+        $array = json_encode(array(
+            "empresa" => json_encode((object)array(
+                            "key_secret"=>"YeF6UoyUjR9vppHInaKiZuUWmlEmaTFLDNhBKDuU",
+                            "key_public"=>"RrgMyQ87xLG26lW8FGs8Rozt1UjcsH0L6icRdC3I",
+                            "idenEmpresa"=>"J456849955"
+            )),
+            "cliente" => json_encode((object)array(
+                            "codigo"=>"0001",
+                            "firstName"=>"Jhon",
+                            "lastName"=>"Peter",
+                            "street1"=>"12-45 Z.15, Guatemala",
+                            "country"=>"GT",
+                            "city"=>"Guatemala",
+                            "state"=>"GT",
+                            "email"=>"peterjsz@gmail.com",
+                            "ipAddress"=>"172.16.10.30",
+                            "Total"=>"2",
+                            "currency"=>"GTQ",
+                            "fecha_transaccion"=>null,
+                            "postalCode"=>"01009",
+                            "phone"=>"2300",
+                            "deviceFingerprintID"=>"1536014945757"
+            )),
+            "tarjetaPagalo" => $request->get('tcToken')?json_encode(base64_decode($request->get('tcToken'))):json_encode((object)array(
+                            "nameCard"=>"Jhon Peter",
+                            "accountNumber"=>"454881204940004",
+                            "expirationMonth"=>"12",
+                            "expirationYear"=>"2020",
+                            "CVVCard"=>"502"
+            )),
+            "detalle" => json_encode(array(
+                            "id_producto"=>"P1",
+                            "cantidad"=>$request->get('cantidad'),
+                            "tipo"=>"producto",
+                            "nombre"=>"Consola de videojuegos",
+                            "precio"=>$request->get('precio'),
+                            "Subtotal"=>$request->get('cantidad')*$request->get('precio')
+            )),
+        ));
+        try{
+            $ch = curl_init();
+
+            curl_setopt($ch, CURLOPT_URL, $base_api);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $array);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            $resp = curl_exec($ch);
+            $info = curl_getinfo($ch);
+            $json = json_decode($resp);
+            // $json = json_decode($array);//discomment for debbuger mode
+    
+            // var_dump($json);
+            return Response::json($json, 200);
+        }catch (Exception $e) {
+            $returnData = array (
+                'status' => 502,
+                'message' => $e->getMessage()
+            );
+            return Response::json($returnData, 500);
+        }
+        
+
+    }
     //Pago con pagadito
     public function pagar(Request $request)
     {

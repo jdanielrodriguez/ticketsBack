@@ -55,6 +55,7 @@ Route::put('vender/{id}', 'EventosFuncionesAreaController@Vender');
 Route::post('pago', 'EventosVentaController@pago2co');
 Route::post('qpago', 'EventosVentaController@pagarQPP');
 Route::post('pagadito', 'EventosVentaController@pagar');
+Route::post('pagalo', 'EventosVentaController@pagalo');
 
 Route::post('enviar', 'EventosVentaController@enviar');
 Route::post('pagar', 'EventosVentaController@pagar');
