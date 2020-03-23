@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\EventosVenta;
+use App\EventosFunciones;
+use App\EventosFuncionesArea;
+use App\EventosFuncionesAreaLugar;
+use App\Eventos;
 use App\Users;
 use Response;
 use Validator;
@@ -27,49 +31,67 @@ class EventosVentaController extends Controller
         if($request->get('filter')){
             switch ($request->get('filter')) {
                 case 'usuario':{
-                    $objectSee = EventosVenta::whereRaw('usuario=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $idEventos = EventosVenta::select("evento")->whereRaw('usuario=?',[$id])->get();
+                    $idFunciones = EventosVenta::select("evento_funcion")->whereRaw('usuario=?',[$id])->get();
+                    $idLugares = EventosVenta::select("evento_funcion_area_lugar")->whereRaw('usuario=?',[$id])->get();
+                    $eventos = Eventos::whereIn('id',$idEventos)->get();
+                    $objectSee = collect();
+                    foreach ($eventos as $key => $value) {
+                        $areasId = EventosFuncionesAreaLugar::select('evento_funcion_area')->whereIn('id',$idLugares)->get();
+                        $funciones = EventosFunciones::whereIn('id',$idFunciones)->with('imagenes')->get();
+                        foreach ($funciones as $key => $funcion) {
+                            $areas = EventosFuncionesArea::whereIn('id',$areasId)->where('evento_funcion',$funcion->id)->get();
+                            foreach ($areas as $key => $area) {
+                                $lugares = EventosFuncionesAreaLugar::whereIn('id',$idLugares)->whereIn('evento_funcion_area',$areasId)->where('evento_funcion_area',$area->id)->groupby('evento_funcion_area')->with('venta')->get();
+                                $area->lugares = $lugares;
+                            }
+                            $funcion->areas = $areas;
+                        }
+                        $value->funciones = $funciones;
+                        $objectSee->push($value);
+                    }
                     break;
                 }
                 case 'evento':{
-                    $objectSee = EventosVenta::whereRaw('evento=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $objectSee = EventosVenta::whereRaw('evento=?',[$id])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
                     break;
                 }
                 case 'token':{
-                    $objectSee = EventosVenta::whereRaw('token=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $objectSee = EventosVenta::whereRaw('token=?',[$id])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
                     break;
                 }
                 case 'usuario_evento':{
-                    $objectSee = EventosVenta::whereRaw('usuario=? and evento=?',[$id,$state])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $objectSee = EventosVenta::whereRaw('usuario=? and evento=?',[$id,$state])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
                     break;
                 }
                 case 'evento_funcion':{
-                    $objectSee = EventosVenta::whereRaw('evento_funcion=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $objectSee = EventosVenta::whereRaw('evento_funcion=?',[$id])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
                     break;
                 }
                 case 'evento_funcion_area_lugar':{
-                    $objectSee = EventosVenta::whereRaw('evento_funcion_area_lugar=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $objectSee = EventosVenta::whereRaw('evento_funcion_area_lugar=?',[$id])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
                     break;
                 }
                 case 'evento_vendedor':{
-                    $objectSee = EventosVenta::whereRaw('evento_vendedor=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $objectSee = EventosVenta::whereRaw('evento_vendedor=?',[$id])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
                     break;
                 }
                 case 'evento_funcion_evento_vendedor':{
-                    $objectSee = EventosVenta::whereRaw('evento_funcion=? and evento_vendedor=?',[$id,$state])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $objectSee = EventosVenta::whereRaw('evento_funcion=? and evento_vendedor=?',[$id,$state])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
                     break;
                 }
                 case 'evento_funcion_usuario':{
-                    $objectSee = EventosVenta::whereRaw('evento_funcion=? and usuario=?',[$id,$state])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $objectSee = EventosVenta::whereRaw('evento_funcion=? and usuario=?',[$id,$state])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
                     break;
                 }
                 default:{
-                    $objectSee = EventosVenta::whereRaw('usuario=? and state=?',[$id,$state])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+                    $objectSee = EventosVenta::whereRaw('usuario=? and state=?',[$id,$state])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
                     break;
                 }
     
             }
         }else{
-            $objectSee = EventosVenta::whereRaw('usuario=?',[$id])->with('usuarios','eventos','area','vendedores','descuentos')->get();
+            $objectSee = EventosVenta::whereRaw('usuario=?',[$id])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
         }
     
         if ($objectSee) {
@@ -117,7 +139,7 @@ class EventosVentaController extends Controller
         }
         else {
             try {
-                $objectSee = EventosVenta::whereRaw('usuario=? and evento_funcion_area_lugar=?',[$request->get('usuario'),$request->get('evento_funcion_area_lugar')])->with('usuarios','eventos','area','vendedores','descuentos')->first();
+                $objectSee = EventosVenta::whereRaw('usuario=? and evento_funcion_area_lugar=?',[$request->get('usuario'),$request->get('evento_funcion_area_lugar')])->with('usuarios','eventos','lugar','vendedores','descuentos')->first();
                 if($objectSee){
                     return Response::json($objectSee, 200);
                 }else{
@@ -474,7 +496,7 @@ class EventosVentaController extends Controller
             );
             return Response::json($returnData, 400);
         }else{
-            $objectSee = EventosVenta::whereRaw('token=? and ern=?',[$request->get('token'),$request->get('ern')])->with('usuarios','eventos','area','vendedores','descuentos')->first();
+            $objectSee = EventosVenta::whereRaw('token=? and ern=?',[$request->get('token'),$request->get('ern')])->with('usuarios','eventos','lugar','vendedores','descuentos')->first();
             if(!$objectSee){
                 if ($request->get('token')) {
                     /*

@@ -20,7 +20,7 @@ class EventosVenta extends Model
         return $this->hasOne('App\EventosFunciones','id','evento_funcion')->with('eventos');
     }
 
-    public function area(){
+    public function lugar(){
         return $this->hasOne('App\EventosFuncionesAreaLugar','id','evento_funcion_area_lugar')->with('eventos');
     }
 

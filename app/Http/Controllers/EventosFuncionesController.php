@@ -33,7 +33,7 @@ class EventosFuncionesController extends Controller
                     break;
                 }
                 case 'buscar':{
-                    $objectSee = EventosFunciones::whereRaw('fecha_inicio=? and titulo=?',[$state,$id])->with('eventos','vendedores','imagenes')->first();
+                    $objectSee = EventosFunciones::whereRaw('fecha_inicio=? and titulo=?',[$state,$id])->with('eventos','vendedores','imagenes','areas')->first();
                     break;
                 }
                 case 'proximos-principales':{
