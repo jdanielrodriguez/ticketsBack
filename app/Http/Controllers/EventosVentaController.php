@@ -38,17 +38,19 @@ class EventosVentaController extends Controller
                     $objectSee = collect();
                     foreach ($eventos as $key => $value) {
                         $areasId = EventosFuncionesAreaLugar::select('evento_funcion_area')->whereIn('id',$idLugares)->get();
-                        $funciones = EventosFunciones::whereIn('id',$idFunciones)->with('imagenes')->get();
+                        $funciones = EventosFunciones::whereIn('id',$idFunciones)->whereRaw('fecha_inicio>=?',[$state])->with('imagenes')->get();
                         foreach ($funciones as $key => $funcion) {
                             $areas = EventosFuncionesArea::whereIn('id',$areasId)->where('evento_funcion',$funcion->id)->get();
                             foreach ($areas as $key => $area) {
-                                $lugares = EventosFuncionesAreaLugar::whereIn('id',$idLugares)->whereIn('evento_funcion_area',$areasId)->where('evento_funcion_area',$area->id)->groupby('evento_funcion_area')->with('venta')->get();
+                                $lugares = EventosFuncionesAreaLugar::whereIn('id',$idLugares)->whereIn('evento_funcion_area',$areasId)->where('evento_funcion_area',$area->id)->with('venta')->get();
                                 $area->lugares = $lugares;
                             }
                             $funcion->areas = $areas;
                         }
                         $value->funciones = $funciones;
-                        $objectSee->push($value);
+                        if(sizeof($funciones)>0){
+                            $objectSee->push($value);
+                        }
                     }
                     break;
                 }
@@ -82,6 +84,30 @@ class EventosVentaController extends Controller
                 }
                 case 'evento_funcion_usuario':{
                     $objectSee = EventosVenta::whereRaw('evento_funcion=? and usuario=?',[$id,$state])->with('usuarios','eventos','lugar','vendedores','descuentos')->get();
+                    break;
+                }
+                case 'usuario-pasados':{
+                    $idEventos = EventosVenta::select("evento")->whereRaw('usuario=?',[$id])->get();
+                    $idFunciones = EventosVenta::select("evento_funcion")->whereRaw('usuario=?',[$id])->get();
+                    $idLugares = EventosVenta::select("evento_funcion_area_lugar")->whereRaw('usuario=?',[$id])->get();
+                    $eventos = Eventos::whereIn('id',$idEventos)->get();
+                    $objectSee = collect();
+                    foreach ($eventos as $key => $value) {
+                        $areasId = EventosFuncionesAreaLugar::select('evento_funcion_area')->whereIn('id',$idLugares)->get();
+                        $funciones = EventosFunciones::whereIn('id',$idFunciones)->whereRaw('fecha_fin<?',[$state])->with('imagenes')->get();
+                        foreach ($funciones as $key => $funcion) {
+                            $areas = EventosFuncionesArea::whereIn('id',$areasId)->where('evento_funcion',$funcion->id)->get();
+                            foreach ($areas as $key => $area) {
+                                $lugares = EventosFuncionesAreaLugar::whereIn('id',$idLugares)->whereIn('evento_funcion_area',$areasId)->where('evento_funcion_area',$area->id)->with('venta')->get();
+                                $area->lugares = $lugares;
+                            }
+                            $funcion->areas = $areas;
+                        }
+                        $value->funciones = $funciones;
+                        if(sizeof($funciones)>0){
+                            $objectSee->push($value);
+                        }
+                    }
                     break;
                 }
                 default:{
