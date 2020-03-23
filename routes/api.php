@@ -12,8 +12,27 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::resource('users', 'UsersController');
-Route::resource('roles', 'RolesController');
+Route::group(['middleware' => ['jwt.auth']], function() {
+    Route::resource('users', 'UsersController');
+    Route::resource('roles', 'RolesController');
+    Route::resource('eventosfuncionesarealugar', 'EventosFuncionesAreaLugarController');
+    Route::resource('eventosventa', 'EventosVentaController');
+    Route::get('filter/{id}/eventosventa/{state}', "EventosVentaController@getThisByFilter");
+    
+    Route::post('pago', 'EventosVentaController@pago2co');
+    Route::post('qpago', 'EventosVentaController@pagarQPP');
+    Route::post('pagadito', 'EventosVentaController@pagar');
+    Route::post('pagalo', 'EventosVentaController@pagalo');
+    Route::post('pagar', 'EventosVentaController@pagar');
+    Route::post('comprobante', 'EventosVentaController@comprobanteCompra');
+
+    Route::post('enviar', 'EventosVentaController@enviar');
+    Route::post('users/{id}/changepassword', "UsersController@changePassword");
+    Route::post('upload', 'AuthenticateController@uploadAvatar');
+    Route::post('eventosfuncionesarealugar/delete', 'EventosFuncionesAreaLugarController@deleteLugares');
+    Route::post('logout', 'AuthenticateController@logout');
+});
+Route::post('users', 'UsersController@store');
 Route::resource('anuncios', 'AnunciosController');
 Route::resource('anunciosdescuentos', 'AnunciosDescuentosController');
 Route::resource('categoriaeventos', 'CategoriaEventosController');
@@ -22,12 +41,10 @@ Route::resource('eventosdescuentoarea', 'EventosDescuentoAreaController');
 Route::resource('eventosdescuento', 'EventosDescuentoController');
 Route::resource('eventosdescuentovendedor', 'EventosDescuentoVendedorController');
 Route::resource('eventosfuncionesarea', 'EventosFuncionesAreaController');
-Route::resource('eventosfuncionesarealugar', 'EventosFuncionesAreaLugarController');
 Route::resource('eventosfunciones', 'EventosFuncionesController');
 Route::resource('eventosimgs', 'EventosImgsController');
 Route::resource('eventosvendedor', 'EventosVendedorController');
 Route::resource('eventosvendedormensajeria', 'EventosVendedorMensajeriaController');
-Route::resource('eventosventa', 'EventosVentaController');
 
 Route::get('filter/{id}/anuncios/{state}', "AnunciosController@getThisByFilter");
 Route::get('filter/{id}/anunciosdescuentos/{state}', "AnunciosDescuentosController@getThisByFilter");
@@ -42,28 +59,14 @@ Route::get('filter/{id}/eventosfunciones/{state}', "EventosFuncionesController@g
 Route::get('filter/{id}/eventosimgs/{state}', "EventosImgsController@getThisByFilter");
 Route::get('filter/{id}/eventosvendedor/{state}', "EventosVendedorController@getThisByFilter");
 Route::get('filter/{id}/eventosvendedormensajeria/{state}', "EventosVendedorMensajeriaController@getThisByFilter");
-Route::get('filter/{id}/eventosventa/{state}', "EventosVentaController@getThisByFilter");
 
 Route::get('rol/{id}/users', "Users@getUsersByRol");
 
 Route::post('users/password/reset', 'UsersController@recoveryPassword');
-Route::post('users/{id}/changepassword', "UsersController@changePassword");
 
 Route::put('vender/{id}', 'EventosFuncionesAreaController@Vender');
 
-
-Route::post('pago', 'EventosVentaController@pago2co');
-Route::post('qpago', 'EventosVentaController@pagarQPP');
-Route::post('pagadito', 'EventosVentaController@pagar');
-Route::post('pagalo', 'EventosVentaController@pagalo');
-
-Route::post('enviar', 'EventosVentaController@enviar');
-Route::post('pagar', 'EventosVentaController@pagar');
-Route::post('comprobante', 'EventosVentaController@comprobanteCompra');
 Route::post('login', 'AuthenticateController@login');
-Route::post('upload', 'AuthenticateController@uploadAvatar');
-Route::post('eventosfuncionesarealugar/delete', 'EventosFuncionesAreaLugarController@deleteLugares');
-
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');

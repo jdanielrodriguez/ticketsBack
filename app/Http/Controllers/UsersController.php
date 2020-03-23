@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Requests;
 use App\Users;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Auth;	
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Response;
 use Validator;
 use Hash;
@@ -87,44 +89,73 @@ class UsersController extends Controller
                      $newObject->codigo = $request->get('codigo');
                      $newObject->descripcion = $request->get('descripcion', '');
                      $newObject->state = $request->get('state',1);
+                     $userdata = array(
+                        'username'  => $user,
+                        'password'  => $request->get('password')
+                     );
                      $newObject->save();
                      $objectSee = Users::whereRaw('id=?',$newObject->id)->with('roles')->first();
                      if ($objectSee) {
-                        Mail::send('emails.confirm', ['empresa' => 'Jose Daniel Rodriguez', 'url' => 'https://www.JoseDanielRodriguez.com', 'app' => 'http://me.JoseDanielRodriguez.gt', 'password' => $request->get('password'), 'username' => $objectSee->username, 'email' => $objectSee->email, 'name' => $objectSee->nombres.' '.$objectSee->apellidos,], function (Message $message) use ($objectSee){
-                            $message->from('jdanielr61@gmail.com', 'Info Jose Daniel Rodriguez')
-                                    ->sender('jdanielr61@gmail.com', 'Info Jose Daniel Rodriguez')
-                                    ->to($objectSee->email, $objectSee->nombres.' '.$objectSee->apellidos)
-                                    ->replyTo('jdanielr61@gmail.com', 'Info Jose Daniel Rodriguez')
-                                    ->subject('Usuario Creado');
-                        
-                        });
-                         return Response::json($objectSee, 200);
-                        }
-                        else {
+                        $token = JWTAuth::attempt($userdata);
+                        if($token){
+                            Mail::send('emails.confirm', ['empresa' => 'Jose Daniel Rodriguez', 'url' => 'https://www.JoseDanielRodriguez.com', 'app' => 'http://me.JoseDanielRodriguez.gt', 'password' => $request->get('password'), 'username' => $objectSee->username, 'email' => $objectSee->email, 'name' => $objectSee->nombres.' '.$objectSee->apellidos,], function (Message $message) use ($objectSee){
+                                $message->from('jdanielr61@gmail.com', 'Info Jose Daniel Rodriguez')
+                                        ->sender('jdanielr61@gmail.com', 'Info Jose Daniel Rodriguez')
+                                        ->to($objectSee->email, $objectSee->nombres.' '.$objectSee->apellidos)
+                                        ->replyTo('jdanielr61@gmail.com', 'Info Jose Daniel Rodriguez')
+                                        ->subject('Usuario Creado');
+                            
+                            });
+                            $objectSee->last_conection = date('Y-m-d H:i:s');
+                            $objectSee->token = ($token);
+                            $objectSee->save();
+                             return Response::json($objectSee, 200);
+                        }else {
                             $returnData = array (
-                                'status' => 404,
-                                'message' => 'No record found'
+                                'status' => 405,
+                                'message' => 'Token error'
                             );
                             return Response::json($returnData, 404);
                         }
+                    }
+                    else {
+                        $returnData = array (
+                            'status' => 404,
+                            'message' => 'No record found'
+                        );
+                        return Response::json($returnData, 404);
+                    }
              }else{
                 if($request->get('google')=="google" || $request->get('google')=="facebook"){
                     $objectSee = Users::whereRaw('email=? and google_id=?',[$request->get('email'),$request->get('google_id')])->with('comprados','myReferidos')->first();
                     if ($objectSee) {
-                        if($objectSee->google_token==$request->get('google_token')){
-                            $objectSee->google_idToken=$request->get('google_idToken');
-                            $objectSee->foto=$request->get('imagen');
-                            $objectSee->save();
-                            return Response::json($objectSee, 200);
-                        }else{
-                            $objectSee->google_token=$request->get('google_token');
-                            $objectSee->google_idToken=$request->get('google_idToken');
-                            $objectSee->google_id=$request->get('google_id');
-                            $objectSee->foto=$request->get('imagen');
-                            $objectSee->save();
-                            return Response::json($objectSee, 200);
+                        $userdata = array(
+                            'username'  => $request->get('username'),
+                            'password'  => $request->get('password')
+                        );
+                        $token = JWTAuth::attempt($userdata);
+                        $objectSee->token=$token;
+                        if($token){
+                            if($objectSee->google_token==$request->get('google_token')){
+                                $objectSee->google_idToken=$request->get('google_idToken');
+                                $objectSee->foto=$request->get('imagen');
+                                $objectSee->save();
+                                return Response::json($objectSee, 200);
+                            }else{
+                                $objectSee->google_token=$request->get('google_token');
+                                $objectSee->google_idToken=$request->get('google_idToken');
+                                $objectSee->google_id=$request->get('google_id');
+                                $objectSee->foto=$request->get('imagen');
+                                $objectSee->save();
+                                return Response::json($objectSee, 200);
+                            }
+                        }else {
+                            $returnData = array(
+                                'status' => 404,
+                                'message' => 'Token Error'
+                            );
+                            return Response::json($returnData, 404);
                         }
-                        
                     }
                     else {
                         $returnData = array(

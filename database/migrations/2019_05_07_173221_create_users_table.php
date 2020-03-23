@@ -33,6 +33,7 @@ class CreateUsersTable extends Migration
             $table->string('pic1')->nullable()->default(null);
             $table->string('pic2')->nullable()->default(null);
             $table->string('pic3')->nullable()->default(null);
+            $table->string('token',500)->nullable()->default(null);
             $table->integer('state')->nullable()->default(1);
 
             $table->integer('rol')->nullable()->default(null)->unsigned();

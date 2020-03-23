@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;	
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Users;
 use Response;
 use Validator;
 use Storage;
-use Auth;
 
 class AuthenticateController extends Controller
 {
@@ -16,6 +19,12 @@ class AuthenticateController extends Controller
         if($request->get('google')=="google" || $request->get('google')=="facebook"){
             $objectSee = Users::whereRaw('email=? and google_id=?',[$request->get('email'),$request->get('google_id')])->with('comprados','myReferidos')->first();
             if ($objectSee) {
+                $userdata = array(
+                    'username'  => $request->get('username'),
+                    'password'  => $request->get('password')
+                );
+                $token = JWTAuth::attempt($userdata);
+                $objectSee->token = $token;
                 if($objectSee->google_token==$request->get('google_token')){
                     $objectSee->google_idToken=$request->get('google_idToken');
                     $objectSee->foto=$request->get('imagen');
@@ -71,9 +80,11 @@ class AuthenticateController extends Controller
                         );
                     }
                     
-    
-                    if(Auth::attempt($userdata, true)) {
+                    $token = JWTAuth::attempt($userdata);
+                    if($token) {
                         $user = Users::find(Auth::user()->id);
+                        $user->last_conection = date('Y-m-d H:i:s');
+                        $user->token = ($token);
                         $user->save();
                         return Response::json($user, 200);
                     }
@@ -134,5 +145,37 @@ class AuthenticateController extends Controller
             }
     
         }
+    }
+
+    /**
+     * Log out
+     * Invalidate the token, so user cannot use it anymore
+     * They have to relogin to get a new token
+     *
+     * @param Request $request
+     */
+    public function logout(Request $request) {
+        $this->validate($request, ['token' => 'required']);
+        
+        try {
+            JWTAuth::invalidate($request->input('token'));
+            return response([
+            'status' => 'success',
+            'msg' => 'You have successfully logged out.'
+        ]);
+        } catch (JWTException $e) {
+            // something went wrong whilst attempting to encode the token
+            return response([
+                'status' => 'error',
+                'msg' => 'Failed to logout, please try again.'
+            ]);
+        }
+    }
+
+    public function refresh()
+    {
+        return response([
+            'status' => 'success'
+        ]);
     }
 }
