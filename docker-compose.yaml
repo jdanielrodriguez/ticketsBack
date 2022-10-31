@@ -1,0 +1,75 @@
+version: "3.8"
+services:
+  ticketera_app:
+    container_name: ticketera_app
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    expose:
+      - 9000
+    volumes:
+      - .:/usr/src/app
+      - ./public:/usr/src/app/public
+    depends_on:
+      - ticketera_db
+    networks:
+      - tickets_network
+
+  ticketera_nginx:
+    container_name: ticketera_nginx
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    volumes:
+    - ./public:/usr/src/app/public
+    ports:
+      - 80:80
+    depends_on:
+      - ticketera_app
+    environment:
+      NGINX_FPM_HOST: ticketera_app
+      NGINX_ROOT: /usr/src/app/public
+    networks:
+      - tickets_network
+
+  ticketera_db:
+    container_name: ticketera_db
+    image: mysql:8.0.20
+    restart: always
+    volumes:
+      - ./docker/db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: ticketera
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    networks:
+      - tickets_network
+
+  phpmyadmin:
+      container_name: phpmyadmin
+      image: phpmyadmin
+      restart: always
+      ports:
+      - 8081:80
+      links:
+      - ticketera_db
+      environment:
+      - PMA_ARBITRARY=1
+      - UPLOAD_LIMIT=3000M
+      networks:
+      - tickets_network
+
+  ticketera_redis:
+    container_name: ticketera_redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - tickets_network
+
+networks:
+  tickets_network:
+    driver: bridge

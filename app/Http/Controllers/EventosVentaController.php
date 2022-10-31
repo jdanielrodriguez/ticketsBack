@@ -348,7 +348,7 @@ class EventosVentaController extends Controller
                             "nameCard"=>"Jhon Peter",
                             "accountNumber"=>"454881204940004",
                             "expirationMonth"=>"12",
-                            "expirationYear"=>"2020",
+                            "expirationYear"=>"2023",
                             "CVVCard"=>"502"
             )),
             "detalle" => json_encode(array(
